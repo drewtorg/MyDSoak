@@ -10,6 +10,7 @@ using SharedObjects;
 
 using log4net;
 using log4net.Config;
+using System.Windows.Forms;
 
 namespace Player
 {
@@ -49,6 +50,7 @@ namespace Player
 
         private static ILog Logger = LogManager.GetLogger(typeof(Program));
 
+        [STAThread]
         static void Main(string[] args)
         {
             XmlConfigurator.Configure();
@@ -58,12 +60,6 @@ namespace Player
 
             if (Parser.Default.ParseArguments(args, options))
             {
-                Console.WriteLine("Endpoint: {0}", options.EndPoint);
-                Console.WriteLine("First Name: {0}", options.FirstName);
-                Console.WriteLine("Last Name: {0}", options.LastName);
-                Console.WriteLine("A-Number: {0}", options.ANumber);
-                Console.WriteLine("Alias: {0}", options.Alias);
-
                 IdentityInfo info = new IdentityInfo()
                 {
                     FirstName = options.FirstName,
@@ -73,8 +69,10 @@ namespace Player
                 };
 
                 Player player = new Player(options.EndPoint, info);
-                player.SendLoginRequest();
-                player.ReceiveMessage();
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new PlayerForm(player));
             }
         }
     }
