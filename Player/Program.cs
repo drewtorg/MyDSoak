@@ -8,6 +8,9 @@ using CommandLine;
 
 using SharedObjects;
 
+using log4net;
+using log4net.Config;
+
 namespace Player
 {
     class Program
@@ -44,8 +47,13 @@ namespace Player
             }
         }
 
+        private static ILog Logger = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
+            XmlConfigurator.Configure();
+            Logger.Info("Starting up");
+
             Options options = new Options();
 
             if (Parser.Default.ParseArguments(args, options))
@@ -66,6 +74,7 @@ namespace Player
 
                 Player player = new Player(options.EndPoint, info);
                 player.SendLoginRequest();
+                player.ReceiveMessage();
             }
         }
     }
