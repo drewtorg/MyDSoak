@@ -104,15 +104,18 @@
             this.processListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.nameColumn,
             this.valueColumn});
+            this.processListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.processListView.Location = new System.Drawing.Point(12, 75);
             this.processListView.Name = "processListView";
             this.processListView.Size = new System.Drawing.Size(220, 126);
             this.processListView.TabIndex = 6;
             this.processListView.UseCompatibleStateImageBehavior = false;
+            this.processListView.View = System.Windows.Forms.View.Details;
             // 
             // nameColumn
             // 
             this.nameColumn.Text = "Property Name";
+            this.nameColumn.Width = 90;
             // 
             // valueColumn
             // 
@@ -269,7 +272,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 261);
+            this.ClientSize = new System.Drawing.Size(417, 219);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.statusLabel);

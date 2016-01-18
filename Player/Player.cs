@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections;
 
@@ -121,10 +122,11 @@ namespace Player
 
                 Logger.Debug("Sent JoinGameRequest: " + Encoding.ASCII.GetString(bytes));
             }
-            else
-            {
-                SendGameListRequest();
-            }
+            //else
+            //{
+            //    Thread.Sleep(500);
+            //    SendGameListRequest();
+            //}
         }
 
         public void SendLogoutRequest()
@@ -207,13 +209,12 @@ namespace Player
             Logger.Debug("Was JoinGameReply");
 
             ThreadHelper.SetText(Form, Form.StatusLabel, "In Game");
-
-            // TODO: Fix this with the ThreadHelper
+            
             if (reply.Success)
             {
                 Game = potentialGames[0];
                 Process.LifePoints = (short)reply.InitialLifePoints;
-                Form.ProcessListView.Items.Add(new System.Windows.Forms.ListViewItem(new string[]
+                ThreadHelper.AddListViewItem(Form, Form.ProcessListView, new System.Windows.Forms.ListViewItem(new string[]
                                                                 {
                                                                     "Life Points",
                                                                     Process.LifePoints.ToString()
@@ -224,6 +225,12 @@ namespace Player
                 potentialGames.RemoveAt(0);
                 SendJoinGameRequest();
             }
+        }
+
+        public void ReceiveMessage(Reply reply)
+        {
+            Logger.Debug("Was LogoutReply");
+            Stop();
         }
     }
 }

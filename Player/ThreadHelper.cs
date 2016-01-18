@@ -8,11 +8,12 @@ using System.Windows.Forms;
 
 namespace Player
 {
-    http://stackoverflow.com/questions/10775367/cross-thread-operation-not-valid-control-textbox1-accessed-from-a-thread-othe
+    // http://stackoverflow.com/questions/10775367/cross-thread-operation-not-valid-control-textbox1-accessed-from-a-thread-othe
 
     public static class ThreadHelper
     {
         delegate void SetTextCallback(Form f, Control ctrl, string text);
+        delegate void AddListViewItemCallback(Form f, ListView ctrl, ListViewItem item);
         /// <summary>
         /// Set text property of various controls
         /// </summary>
@@ -32,6 +33,22 @@ namespace Player
             else
             {
                 ctrl.Text = text;
+            }
+        }
+
+        public static void AddListViewItem(Form form, ListView ctrl, ListViewItem item)
+        {
+            // InvokeRequired required compares the thread ID of the 
+            // calling thread to the thread ID of the creating thread. 
+            // If these threads are different, it returns true. 
+            if (ctrl.InvokeRequired)
+            {
+                AddListViewItemCallback d = new AddListViewItemCallback(AddListViewItem);
+                form.Invoke(d, new object[] { form, ctrl, item });
+            }
+            else
+            {
+                ctrl.Items.Add(item);
             }
         }
     }
