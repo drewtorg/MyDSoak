@@ -68,11 +68,13 @@ namespace Player
                     Alias = options.Alias
                 };
 
-                Player player = new Player(options.EndPoint, info);
-
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new PlayerForm(player));
+
+                Player player = new Player(options.EndPoint, info);
+                PlayerForm form = new PlayerForm();
+                player.Subscribe(form);
+                Application.Run(form);
             }
         }
     }

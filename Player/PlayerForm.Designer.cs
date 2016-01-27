@@ -51,6 +51,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.StartButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -268,11 +269,22 @@
             this.label5.TabIndex = 0;
             this.label5.Text = "Game Id:";
             // 
+            // StartButton
+            // 
+            this.StartButton.Location = new System.Drawing.Point(219, 9);
+            this.StartButton.Name = "StartButton";
+            this.StartButton.Size = new System.Drawing.Size(75, 23);
+            this.StartButton.TabIndex = 10;
+            this.StartButton.Text = "Start";
+            this.StartButton.UseVisualStyleBackColor = true;
+            this.StartButton.Click += new System.EventHandler(this.StartStopButton_Click);
+            // 
             // PlayerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(417, 219);
+            this.Controls.Add(this.StartButton);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.StatusLabel);
@@ -317,5 +329,6 @@
         public System.Windows.Forms.Label NumPlayerLabel;
         public System.Windows.Forms.Label GameStatusLabel;
         public System.Windows.Forms.Label GameIdLabel;
+        private System.Windows.Forms.Button StartButton;
     }
 }

@@ -14,6 +14,7 @@ namespace Player
     {
         delegate void SetTextCallback(Form f, Control ctrl, string text);
         delegate void AddListViewItemCallback(Form f, ListView ctrl, ListViewItem item);
+        delegate void ClearListViewCallback(Form f, ListView ctrl);
         /// <summary>
         /// Set text property of various controls
         /// </summary>
@@ -49,6 +50,22 @@ namespace Player
             else
             {
                 ctrl.Items.Add(item);
+            }
+        }
+
+        public static void ClearListView(Form form, ListView ctrl)
+        {
+            // InvokeRequired required compares the thread ID of the 
+            // calling thread to the thread ID of the creating thread. 
+            // If these threads are different, it returns true. 
+            if (ctrl.InvokeRequired)
+            {
+                ClearListViewCallback d = new ClearListViewCallback(ClearListView);
+                form.Invoke(d, new object[] { form, ctrl });
+            }
+            else
+            {
+                ctrl.Items.Clear();
             }
         }
     }

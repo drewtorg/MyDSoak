@@ -29,7 +29,6 @@ namespace Player
         public IdentityInfo Identity { get; set; }
         public ProcessInfo Process { get; set; }
         public GameInfo Game { get; set; }
-        public PlayerForm Form { get; set; }
         public List<IObserver> Observers { get; set; }
 
         private List<GameInfo> potentialGames = null;
@@ -43,6 +42,8 @@ namespace Player
 
             IPEndPoint localEp = new IPEndPoint(IPAddress.Any, 0);
             client = new UdpClient(localEp);
+
+            Observers = new List<IObserver>();
         }
         
         public void Start()
@@ -55,12 +56,12 @@ namespace Player
         public void Stop()
         {
             done = true;
+            foreach (var observer in Observers)
+                observer.Remove(this);
         }
 
         public void SendLoginRequest()
         {
-            ThreadHelper.SetText(Form, Form.StatusLabel, "Logging In");
-
             LoginRequest msg = new LoginRequest()
             {
                 Identity = this.Identity,
@@ -105,9 +106,6 @@ namespace Player
         {
             if (potentialGames.Count != 0)
             {
-                ThreadHelper.SetText(Form, Form.StatusLabel, "Joining Game");
-
-
                 GameInfo game = potentialGames[0];
 
                 JoinGameRequest msg = new JoinGameRequest()
@@ -126,9 +124,6 @@ namespace Player
 
         public void SendLogoutRequest()
         {
-            ThreadHelper.SetText(Form, Form.StatusLabel, "Logging Out");
-
-
             LogoutRequest msg = new LogoutRequest();
 
             byte[] bytes = msg.Encode();
@@ -140,7 +135,14 @@ namespace Player
 
         public void ReceiveData()
         {
-            client.BeginReceive(new AsyncCallback(ReceiveCallback), null);
+            try
+            {
+                client.BeginReceive(new AsyncCallback(ReceiveCallback), null);
+            }
+            catch (SocketException e)
+            {
+                Logger.Debug(e.ToString());
+            }
         }
 
         public void ReceiveCallback(IAsyncResult result)
@@ -158,6 +160,8 @@ namespace Player
                     Logger.Debug("Received Message: " + Encoding.ASCII.GetString(bytes));
 
                     ReceiveMessage((dynamic)message);
+
+                    Notify(); //Update display after receiving any message
                 }
 
                 if (!done)
@@ -173,10 +177,7 @@ namespace Player
         public void ReceiveMessage(LoginReply reply)
         {
             Process = reply.ProcessInfo;
-
-            ThreadHelper.SetText(Form, Form.EndpointLabel, Process.EndPoint.HostAndPort);
-            ThreadHelper.SetText(Form, Form.ProcessLabel, String.Format("{0}({1})", Identity.Alias, Process.ProcessId));
-            ThreadHelper.SetText(Form, Form.StatusLabel, "Logged In");
+            Process.Status = ProcessInfo.StatusCode.Registered;
 
             Logger.Debug("Was LoginReply");
 
@@ -193,6 +194,7 @@ namespace Player
         public void ReceiveMessage(GameListReply reply)
         {
             Logger.Debug("Was GameListReply");
+            Process.Status = ProcessInfo.StatusCode.JoiningGame;
 
             potentialGames = reply.GameInfo.ToList();
 
@@ -205,14 +207,9 @@ namespace Player
 
             if (reply.Success)
             {
-                ThreadHelper.SetText(Form, Form.StatusLabel, "In Game");
+                Process.Status = ProcessInfo.StatusCode.JoinedGame;
                 Game = potentialGames[0];
                 Process.LifePoints = (short)reply.InitialLifePoints;
-                ThreadHelper.AddListViewItem(Form, Form.ProcessListView, new System.Windows.Forms.ListViewItem(new string[]
-                                                                {
-                                                                    "Life Points",
-                                                                    Process.LifePoints.ToString()
-                                                                }));
             }
             else
             {
@@ -224,13 +221,18 @@ namespace Player
         public void ReceiveMessage(Reply reply)
         {
             Logger.Debug("Was LogoutReply");
+            Process.Status = ProcessInfo.StatusCode.Terminating;
             Stop();
         }
 
         public void Subscribe(IObserver observer)
         {
             if (observer != null && !Observers.Contains(observer))
+            {
+                if (observer is PlayerForm)
+                    ((PlayerForm)observer).Player = this;
                 Observers.Add(observer);
+            }
         }
 
         public void Unsubscribe(IObserver observer)
@@ -238,8 +240,14 @@ namespace Player
             if (observer != null && Observers.Contains(observer))
             {
                 Observers.Remove(observer);
-                //observer.Remove(this);
+                observer.Remove(this);
             }
+        }
+
+        public void Notify()
+        {
+            foreach (var observer in Observers)
+                observer.Update(this);
         }
     }
 }
