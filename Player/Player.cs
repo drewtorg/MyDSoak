@@ -19,18 +19,18 @@ using log4net;
 
 namespace Player
 {
-    public class Player
+    public class Player : ISubject
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
         private readonly UdpClient client;
         private bool done;
 
         public PublicEndPoint RegistryEndPoint { get; set; }
-        public PublicEndPoint GameManagerEndPoint { get; set; }
         public IdentityInfo Identity { get; set; }
         public ProcessInfo Process { get; set; }
         public GameInfo Game { get; set; }
         public PlayerForm Form { get; set; }
+        public List<IObserver> Observers { get; set; }
 
         private List<GameInfo> potentialGames = null;
 
@@ -122,11 +122,6 @@ namespace Player
 
                 Logger.Debug("Sent JoinGameRequest: " + Encoding.ASCII.GetString(bytes));
             }
-            //else
-            //{
-            //    Thread.Sleep(500);
-            //    SendGameListRequest();
-            //}
         }
 
         public void SendLogoutRequest()
@@ -208,10 +203,9 @@ namespace Player
         {
             Logger.Debug("Was JoinGameReply");
 
-            ThreadHelper.SetText(Form, Form.StatusLabel, "In Game");
-            
             if (reply.Success)
             {
+                ThreadHelper.SetText(Form, Form.StatusLabel, "In Game");
                 Game = potentialGames[0];
                 Process.LifePoints = (short)reply.InitialLifePoints;
                 ThreadHelper.AddListViewItem(Form, Form.ProcessListView, new System.Windows.Forms.ListViewItem(new string[]
@@ -231,6 +225,21 @@ namespace Player
         {
             Logger.Debug("Was LogoutReply");
             Stop();
+        }
+
+        public void Subscribe(IObserver observer)
+        {
+            if (observer != null && !Observers.Contains(observer))
+                Observers.Add(observer);
+        }
+
+        public void Unsubscribe(IObserver observer)
+        {
+            if (observer != null && Observers.Contains(observer))
+            {
+                Observers.Remove(observer);
+                //observer.Remove(this);
+            }
         }
     }
 }
