@@ -21,9 +21,9 @@ namespace Player
 {
     public class Player : ISubject
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
-        private readonly UdpClient client;
-        private bool done;
+        protected static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
+        protected readonly UdpClient client;
+        protected bool done;
 
         public PublicEndPoint RegistryEndPoint { get; set; }
         public IdentityInfo Identity { get; set; }
