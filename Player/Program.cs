@@ -43,7 +43,11 @@ namespace Player
             {
                 var usage = new StringBuilder();
                 usage.AppendLine("MyDSoak 1.0");
-                usage.AppendLine("Ask Drew what you did wrong");
+                usage.AppendLine("-p: Registry's endpoint");
+                usage.AppendLine("-f: Player's first name");
+                usage.AppendLine("-l: Player's last name");
+                usage.AppendLine("-n: Player's A-number");
+                usage.AppendLine("-a: Player's alias");
                 return usage.ToString();
             }
         }

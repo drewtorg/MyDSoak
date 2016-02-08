@@ -48,6 +48,7 @@ namespace Player
         
         public void Start()
         {
+            Logger.Debug("Starting up Player object");
             done = false;
             SendLoginRequest();
             ReceiveData();
@@ -55,6 +56,7 @@ namespace Player
 
         public void Stop()
         {
+            Logger.Debug("Stopping Player object");
             done = true;
             foreach (var observer in Observers)
                 observer.Remove(this);
