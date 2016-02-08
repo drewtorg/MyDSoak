@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SharedObjects;
+
 namespace CommSub
 {
-    class Conversation
+    public abstract class Conversation
     {
+        public abstract void Execute();
     }
 }

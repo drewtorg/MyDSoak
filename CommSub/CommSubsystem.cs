@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CommSub
 {
-    class CommSubsystem
+    public class CommSubsystem
     {
+
     }
 }

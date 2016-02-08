@@ -50,8 +50,24 @@
     <Compile Include="Envelope.cs" />
     <Compile Include="EnvelopeQueue.cs" />
     <Compile Include="EnvelopeQueueDictionary.cs" />
+    <Compile Include="InitiatorRRConversation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponderRRConversation.cs" />
     <Compile Include="RuntimeOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Messages\Messages.csproj">
+      <Project>{9659277f-710a-4e0b-ac2b-12882aac247d}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\SharedObjects\SharedObjects.csproj">
+      <Project>{67fea8d0-4871-49d4-aa38-217f63934d26}</Project>
+      <Name>SharedObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Utils\Utils.csproj">
+      <Project>{3239fcca-21eb-4b04-b8ad-c442491e463e}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

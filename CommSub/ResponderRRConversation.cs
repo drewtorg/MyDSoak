@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommSub
 {
-    public class Dispatcher
+    public class ResponderRRConversation
     {
     }
 }
