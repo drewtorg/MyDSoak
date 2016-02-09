@@ -8,6 +8,5 @@ namespace CommSub
 {
     public static class Dispatcher
     {
-
     }
 }

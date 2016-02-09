@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SharedObjects;
+using System.Threading;
 
 namespace CommSub
 {
@@ -16,11 +17,22 @@ namespace CommSub
 
         private ConcurrentQueue<Envelope> queue;
 
+        public EnvelopeQueue()
+        {
+            queue = new ConcurrentQueue<Envelope>();
+        }
+
         public void Enqueue(Envelope envelope) => queue.Enqueue(envelope);
-        public Envelope Dequeue()
+        public Envelope Dequeue(int timeout)
         {
             Envelope result = null;
-            queue.TryDequeue(out result);
+            bool successful = queue.TryDequeue(out result);
+
+            if(!successful)
+            {
+                Thread.Sleep(timeout);
+                queue.TryDequeue(out result);
+            }
             return result;
         }
     }

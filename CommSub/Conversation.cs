@@ -16,6 +16,7 @@ namespace CommSub
         public PublicEndPoint Initiator { get; set; }
         public PublicEndPoint Responder { get; set; }
         public Communicator Communicator { get; set; }
+        public MessageNumber Id { get; set; }
 
         public abstract bool Execute();
     }

@@ -11,26 +11,21 @@ namespace CommSub
     {
         public override bool Execute()
         {
-            if (ValidateConversationState() && ValidateProcessState())
+            Envelope envelope = new Envelope()
             {
-                Envelope envelope = new Envelope()
-                {
-                    Message = CreateRequest(),
-                    Ep = Responder
-                };
+                Message = CreateRequest(),
+                Ep = Responder
+            };
 
-                for (int i = 0; i < Tries; i++)
-                {
-                    Communicator.Send(envelope);
-                    Envelope reply = Communicator.Receive(Timeout);
-                    if (reply != null)
-                        return ProcessReply(envelope);
-                }
-
-                return ProcessFailure();                
+            for (int i = 0; i < Tries; i++)
+            {
+                Communicator.Send(envelope);
+                Envelope reply = Communicator.Receive(Timeout);
+                if (reply != null && ValidateConversationState() && ValidateProcessState())
+                    return ProcessReply(envelope);
             }
 
-            return false;
+            return ProcessFailure();
         }
 
         protected abstract bool ValidateConversationState();

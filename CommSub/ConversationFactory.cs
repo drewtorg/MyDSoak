@@ -1,10 +1,13 @@
 ﻿using Messages;
+using SharedObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+
+using Utils;
 
 namespace CommSub
 {
@@ -28,6 +31,11 @@ namespace CommSub
             DefaultTimeOut = 3000;
         }
 
+        public ConversationFactory()
+        {
+            Initialize();
+        }
+
 
         public Conversation CreateFromMessageType(Type type)
         {
@@ -42,7 +50,16 @@ namespace CommSub
                 Func<Conversation> ConversationCreator = Expression.Lambda<Func<Conversation>>(
                    Expression.New(convType.GetConstructor(Type.EmptyTypes))
                  ).Compile();
-                return ConversationCreator();
+
+                Conversation conv = ConversationCreator();
+                conv.Timeout = DefaultTimeOut;
+                conv.Tries = DefaultMaxRetries;
+                conv.Id = new MessageNumber()
+                {
+                    Pid = ObjectIdGenerator.Instance.GetNextIdNumber(),
+                    Seq = 0
+                };
+                return conv;
             }
             return null;
         }
