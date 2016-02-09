@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace CommSub
 {
-    public class ResponderRRConversation
+    public class ResponderRRConversation : Conversation
     {
+        public override bool Execute()
+        {
+            return false;
+        }
     }
 }
