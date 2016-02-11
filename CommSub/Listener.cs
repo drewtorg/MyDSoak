@@ -16,7 +16,10 @@ namespace CommSub
         {
             while(keepGoing)
             {
-                Envelope envelope = CommSubsystem.
+                Envelope envelope = CommSubsystem.Communicator.Receive(1000);
+
+                if (envelope != null)
+                    CommSubsystem.EnvelopeQueueDictionary.GetByConversationId(envelope.Message.ConvId).Enqueue(envelope); // maybe???
             }
         }
     }

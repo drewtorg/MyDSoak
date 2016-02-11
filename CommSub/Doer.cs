@@ -10,9 +10,14 @@ namespace CommSub
 {
     public class Doer : BackgroundThread
     {
+        public CommSubsystem CommSubsystem { get; set; }
+
         protected override void Process(object state)
         {
-            throw new NotImplementedException();
+            while(keepGoing)
+            {
+                // Do the things
+            }
         }
     }
 }
