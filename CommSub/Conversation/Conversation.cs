@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SharedObjects;
 using Messages.RequestMessages;
 
-namespace CommSub
+namespace CommSub.Conversation
 {
     public abstract class Conversation
     {

@@ -38,7 +38,10 @@ namespace CommSub
                 return new Envelope()
                 {
                     Message = Message.Decode(bytes),
-                    Ep = new PublicEndPoint(ep.ToString())
+                    Ep = new PublicEndPoint()
+                    {
+                        IPEndPoint = ep
+                    }
                 };
             }
             return null;

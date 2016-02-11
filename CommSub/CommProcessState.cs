@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommSub
 {
-    class CommProcessState
+    public class CommProcessState
     {
     }
 }

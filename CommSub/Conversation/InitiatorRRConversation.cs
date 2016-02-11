@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommSub
+namespace CommSub.Conversation
 {
     public abstract class InitiatorRRConversation : Conversation
     {

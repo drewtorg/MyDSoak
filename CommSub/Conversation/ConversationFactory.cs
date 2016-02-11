@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using Utils;
 
-namespace CommSub
+namespace CommSub.Conversation
 {
     public abstract class ConversationFactory
     {
