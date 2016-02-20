@@ -20,7 +20,7 @@ namespace CommSub
         {
             Communicator = new Communicator();
             EnvelopeQueueDictionary = new EnvelopeQueueDictionary();
-            Dispatcher = new Dispatcher();
+            Dispatcher = new Dispatcher() { CommSubsystem = this, Label = "Dispatcher" };
             ProcessAddressBook = new ProcessAddressBook();
         }
 

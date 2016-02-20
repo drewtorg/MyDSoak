@@ -6,34 +6,37 @@ using System.Threading.Tasks;
 using CommSub;
 using CommSub.Conversations;
 using Messages.RequestMessages;
+using Messages.ReplyMessages;
+using SharedObjects;
 
 namespace Player.Conversations
 {
     public class LoginConversation : InitiatorRRConversation
     {
+        public Player Player { get; set; }
         protected override Request CreateRequest()
         {
-            throw new NotImplementedException();
+            return new LoginRequest()
+            {
+                ConvId = new MessageNumber() { Pid = 0, Seq = 1 },
+                MsgId = new MessageNumber() { Pid = 0, Seq = 1 },
+                Identity = ((PlayerState)Player.State).Identity,
+                ProcessLabel = "Drew Torgeson",
+                ProcessType = ProcessInfo.ProcessType.Player
+            };
         }
 
         protected override void ProcessFailure()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Something went wrong");
         }
 
         protected override void ProcessReply(Envelope envelope)
         {
-            throw new NotImplementedException();
-        }
+            LoginReply reply = envelope.Message as LoginReply;
 
-        protected override bool ValidateConversationState()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool ValidateProcessState()
-        {
-            throw new NotImplementedException();
+            ((PlayerState)Player.State).Process = reply.ProcessInfo;
+            ((PlayerState)Player.State).Process.Status = ProcessInfo.StatusCode.Registered;
         }
     }
 }

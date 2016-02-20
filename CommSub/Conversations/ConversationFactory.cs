@@ -62,13 +62,6 @@ namespace CommSub.Conversations
                 conv = ConversationCreator();
                 conv.Timeout = DefaultTimeOut;
                 conv.Tries = DefaultMaxRetries;
-
-                //TODO: Figure out what ID to assigna new conversation
-                conv.Id = new MessageNumber()
-                {
-                    Pid = ObjectIdGenerator.Instance.GetNextIdNumber(),
-                    Seq = 0
-                };
             }
             return conv;
         }

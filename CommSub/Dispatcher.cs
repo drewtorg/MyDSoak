@@ -31,6 +31,8 @@ namespace CommSub
                     {
                         Conversation conversation = CommSubsystem.ConversationFactory.CreateFromMessageType(envelope.Message.GetType());
 
+                        conversation.Id = envelope.Message.ConvId;
+
                         conversation.Start();
                     }
                     else

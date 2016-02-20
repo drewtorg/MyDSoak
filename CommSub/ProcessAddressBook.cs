@@ -13,6 +13,12 @@ namespace CommSub
         public ConcurrentDictionary<int, ProcessInfo> Proccesses { get; set; }
         public ConcurrentDictionary<string, int> EndPoints{ get; set; }
 
+        public ProcessAddressBook()
+        {
+            Proccesses = new ConcurrentDictionary<int, ProcessInfo>();
+            EndPoints = new ConcurrentDictionary<string, int>();
+        }
+
         public void Add(ProcessInfo processInfo)
         {
             Proccesses.TryAdd(processInfo.ProcessId, processInfo);

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Utils;
 
+using SharedObjects;
+
 namespace CommSub
 {
     public class CommProcess : BackgroundThread
@@ -16,7 +18,6 @@ namespace CommSub
 
         protected override void Process(object state)
         {
-            
         }
     }
 }

@@ -17,10 +17,10 @@ namespace Player.Conversations
         protected override void InitTypeMappings()
         {
             AddTypeMapping(typeof(AliveRequest), typeof(AliveConversation));
-            AddTypeMapping(typeof(JoinGameRequest), typeof(AliveConversation));
-            AddTypeMapping(typeof(GameListRequest), typeof(AliveConversation));
-            AddTypeMapping(typeof(LoginRequest), typeof(AliveConversation));
-            AddTypeMapping(typeof(LogoutRequest), typeof(AliveConversation));
+            AddTypeMapping(typeof(JoinGameRequest), typeof(JoinGameConversation));
+            AddTypeMapping(typeof(GameListRequest), typeof(GameListConversation));
+            AddTypeMapping(typeof(LoginRequest), typeof(LoginConversation));
+            AddTypeMapping(typeof(LogoutRequest), typeof(LogoutConversation));
         }
     }
 }
