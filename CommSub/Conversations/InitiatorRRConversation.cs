@@ -13,15 +13,24 @@ namespace CommSub.Conversations
         {
             bool successful = false;
 
+            //setup the envelope
             Envelope envelope = new Envelope()
             {
-                Message = CreateRequest()
+                Message = CreateRequest(),
+                Ep = SendTo
             };
 
+           //make a new queue for this conversation
+            EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(envelope.Message.ConvId);
+            
             for (int i = 0; i < Tries && !successful; i++)
             {
+                //send out the envelope
                 CommSubsystem.Communicator.Send(envelope);
-                Envelope reply = CommSubsystem.Communicator.Receive(Timeout);
+
+                //see if there is a reply in the queue
+                Envelope reply = queue.Dequeue(Timeout);
+
                 if (reply != null && ValidateConversationState() && ValidateProcessState())
                 {
                     ProcessReply(envelope);
@@ -29,23 +38,18 @@ namespace CommSub.Conversations
                 }
             }
 
-            if(!successful)
+            if (!successful)
                 ProcessFailure();
+
+            // is this necessary?
+            Stop();
         }
 
-        //TODO: review the rules for validation of conversation state
-        protected bool ValidateConversationState()
-        {
-            return true;
-        }
 
-        //TODO: review the rules for validation of conversation state
-        protected bool ValidateProcessState()
-        {
-            return true;
-        }
+
+        protected abstract bool ValidateProcessState();
+        protected abstract void ProcessFailure();
         protected abstract Request CreateRequest();
         protected abstract void ProcessReply(Envelope envelope);
-        protected abstract void ProcessFailure();
     }
 }

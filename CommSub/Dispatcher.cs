@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using CommSub.Conversations;
 
 using Utils;
+using log4net;
 
 namespace CommSub
 {
     public class Dispatcher : BackgroundThread
     {
         private const int TIMEOUT = 1000;
+        protected static readonly ILog Logger = LogManager.GetLogger(typeof(Dispatcher));
 
         public CommSubsystem CommSubsystem { get; set; }
 
@@ -21,28 +23,42 @@ namespace CommSub
         {
             while(KeepGoing)
             {
+                Logger.Debug("Top of Processing Loop");
+
                 Envelope envelope = CommSubsystem.Communicator.Receive(TIMEOUT);
-                EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.GetByConversationId(envelope.Message.ConvId);
-
-                //when a queue is null, it's time to create a new conversation
-                if (queue == null)
+                EnvelopeQueue queue = null;
+                if (envelope != null)
                 {
-                    if(CommSubsystem.ConversationFactory.MessageCanStartConversation(envelope.Message.GetType()))
+                    Logger.Debug("Looking for a queue for the Message");
+
+                    queue = CommSubsystem.EnvelopeQueueDictionary.GetByConversationId(envelope.Message.ConvId);
+
+                    //when a queue is null, it's time to create a new conversation
+                    if (queue == null)
                     {
-                        Conversation conversation = CommSubsystem.ConversationFactory.CreateFromMessageType(envelope.Message.GetType());
+                        Logger.Debug("Checking if the Message can Start a Conversation");
 
-                        conversation.Id = envelope.Message.ConvId;
+                        if (CommSubsystem.ConversationFactory.MessageCanStartConversation(envelope.Message.GetType()))
+                        {
+                            Conversation conversation = CommSubsystem.ConversationFactory.CreateFromMessageType(envelope.Message.GetType());
+                            conversation.ReceivedEnvelope = envelope;
 
-                        conversation.Start();
+                            Logger.Debug("Starting a new Conversation");
+
+                            conversation.Start();
+                        }
+                        else
+                        {
+                            //this message can't start a conversation and can't be replied too. It's been sent to the wrong place.
+                            Logger.Debug("Received foreign Message");
+                        }
                     }
                     else
                     {
-                        //this message can't start a conversation and can't be replied too. It's been sent to the wrong place.
+                        queue.Enqueue(envelope);
+
+                        Logger.Debug("Queued up the Message for a Conversation");
                     }
-                }
-                else
-                {
-                    queue.Enqueue(envelope);
                 }
 
                 Thread.Sleep(0);

@@ -11,6 +11,7 @@ using SharedObjects;
 using log4net;
 using log4net.Config;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Player
 {
@@ -36,6 +37,8 @@ namespace Player
                 // PlayerForm form = new PlayerForm();
                 // player.Subscribe(form);
                 // Application.Run(form);
+                Thread.Sleep(5000);
+                player.Stop();
             }
         }
     }

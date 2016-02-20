@@ -26,11 +26,6 @@ namespace Player.Conversations
             throw new NotImplementedException();
         }
 
-        protected override bool ValidateConversationState()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override bool ValidateProcessState()
         {
             throw new NotImplementedException();

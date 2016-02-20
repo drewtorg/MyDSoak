@@ -1,4 +1,5 @@
-﻿using Messages;
+﻿using log4net;
+using Messages;
 using SharedObjects;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace CommSub
 {
     public class Communicator
     {
+        protected static readonly ILog Logger = LogManager.GetLogger(typeof(Communicator));
+
         private UdpClient client;
 
         public Communicator()
@@ -24,18 +27,30 @@ namespace CommSub
         {
             byte[] bytes = envelope.Message.Encode();
             client.Send(bytes, bytes.Length, envelope.Ep.IPEndPoint);
+
+            Logger.Debug("Sending a Message: " + Encoding.ASCII.GetString(bytes));
         }
 
         public Envelope Receive(int timeout)
         {
             client.Client.ReceiveTimeout = timeout;
             IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-            byte[] bytes = client.Receive(ref ep);
+            byte[] bytes = null;
+
+            try {
+                bytes = client.Receive(ref ep);
+            }
+            catch(Exception err)
+            {
+                Logger.Debug("There was no Message");
+            }
 
             Envelope envelope = null;
 
             if (bytes != null)
             {
+                Logger.Debug("Got a Message: " + Encoding.ASCII.GetString(bytes));
+
                 envelope = new Envelope()
                 {
                     Message = Message.Decode(bytes),

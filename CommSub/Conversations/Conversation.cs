@@ -16,9 +16,15 @@ namespace CommSub.Conversations
     {
         public int Tries { get; set; }
         public int Timeout { get; set; }
-        // public PublicEndPoint Initiator { get; set; }
-        // public PublicEndPoint Responder { get; set; }
+        public PublicEndPoint SendTo { get; set; }
         public CommSubsystem CommSubsystem { get; set; }
         public MessageNumber Id { get; set; }
+        public Envelope ReceivedEnvelope { get; set; }
+
+        //TODO: review the rules for validation of conversation state
+        protected bool ValidateConversationState()
+        {
+            return true;
+        }
     }
 }

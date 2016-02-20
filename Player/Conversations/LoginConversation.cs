@@ -8,11 +8,14 @@ using CommSub.Conversations;
 using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using SharedObjects;
+using log4net;
 
 namespace Player.Conversations
 {
     public class LoginConversation : InitiatorRRConversation
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginConversation));
+
         public Player Player { get; set; }
         protected override Request CreateRequest()
         {
@@ -20,7 +23,7 @@ namespace Player.Conversations
             {
                 ConvId = new MessageNumber() { Pid = 0, Seq = 1 },
                 MsgId = new MessageNumber() { Pid = 0, Seq = 1 },
-                Identity = ((PlayerState)Player.State).Identity,
+                Identity = Player.PlayerState.Identity,
                 ProcessLabel = "Drew Torgeson",
                 ProcessType = ProcessInfo.ProcessType.Player
             };
@@ -28,15 +31,20 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Console.WriteLine("Something went wrong");
+            Logger.Debug("Registry did not respond to Login");
         }
 
         protected override void ProcessReply(Envelope envelope)
         {
             LoginReply reply = envelope.Message as LoginReply;
 
-            ((PlayerState)Player.State).Process = reply.ProcessInfo;
-            ((PlayerState)Player.State).Process.Status = ProcessInfo.StatusCode.Registered;
+            Player.PlayerState.Process = reply.ProcessInfo;
+            Player.PlayerState.Process.Status = ProcessInfo.StatusCode.Registered;
+        }
+
+        protected override bool ValidateProcessState()
+        {
+            return true;
         }
     }
 }

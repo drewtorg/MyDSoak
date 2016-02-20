@@ -13,13 +13,19 @@ using Utils;
 using SharedObjects;
 
 using Player.Conversations;
+using log4net;
 
 namespace Player
 {
     public class Player : CommProcess
     {
+        protected static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
+
+        public PlayerState PlayerState { get { return State as PlayerState; } }
+
         public Player(PlayerOptions options)
         {
+            Label = "Player";
             Options = options;
             CommSubsystem = new CommSubsystem()
             {
@@ -43,24 +49,45 @@ namespace Player
         {
             base.Process(state);
 
-            CommSubsystem.Start();
+            Console.WriteLine("Starting LoginConversation");
 
-            Conversation loginConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LoginConversation));
+            LoginConversation loginConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LoginConversation)) as LoginConversation;
+            loginConv.Player = this;
+            loginConv.Label = "LoginConversation";
+            loginConv.CommSubsystem = CommSubsystem;
+            loginConv.SendTo = PlayerState.RegistryEndPoint;
             loginConv.Start();
-            while (loginConv.IsRunning) Thread.Sleep(0);
+            while (loginConv.Status == "Running") Thread.Sleep(0);
 
-            Conversation gameListConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(GameListConversation));
-            gameListConv.Start();
-            while (gameListConv.IsRunning) Thread.Sleep(0);
+            Console.WriteLine("Finished LoginConversation");
 
-            Conversation joinGameConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(JoinGameConversation));
-            joinGameConv.Start();
-            while (joinGameConv.IsRunning) Thread.Sleep(0);
+            //Conversation gameListConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(GameListConversation));
+            //gameListConv.Start();
+            //while (gameListConv.IsRunning) Thread.Sleep(0);
 
-            while(KeepGoing)
+            //Conversation joinGameConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(JoinGameConversation));
+            //joinGameConv.Start();
+            //while (joinGameConv.IsRunning) Thread.Sleep(0);
+
+            while (KeepGoing)
             {
                 Thread.Sleep(0);
             }
+        }
+
+        public override void Start()
+        {
+            base.Start();
+
+            CommSubsystem.Start();
+        }
+
+        public override void Stop()
+        {
+            CommSubsystem.Stop();
+
+            base.Stop();
+
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Player
 {
     public class OldPlayer : ISubject
     {
-        protected static readonly ILog Logger = LogManager.GetLogger(typeof(OldPlayer));
+        protected static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
         protected readonly UdpClient client;
         protected bool done;
 
