@@ -14,26 +14,26 @@ namespace CommSub.Conversations
             bool successful = false;
 
             //setup the envelope
-            Envelope envelope = new Envelope()
+            Envelope request = new Envelope()
             {
                 Message = CreateRequest(),
                 Ep = SendTo
             };
 
            //make a new queue for this conversation
-            EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(envelope.Message.ConvId);
+            EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(request.Message.ConvId);
             
             for (int i = 0; i < Tries && !successful; i++)
             {
                 //send out the envelope
-                CommSubsystem.Communicator.Send(envelope);
+                CommSubsystem.Communicator.Send(request);
 
                 //see if there is a reply in the queue
                 Envelope reply = queue.Dequeue(Timeout);
 
                 if (reply != null && ValidateConversationState() && ValidateProcessState())
                 {
-                    ProcessReply(envelope);
+                    ProcessReply(reply);
                     successful = true;
                 }
             }

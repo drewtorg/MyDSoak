@@ -29,7 +29,7 @@ namespace Player
             Options = options;
             CommSubsystem = new CommSubsystem()
             {
-                ConversationFactory = new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 1000 } 
+                ConversationFactory = new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 3000 } 
             };
             CommSubsystem.Initialize();
             State = new PlayerState()
@@ -69,7 +69,7 @@ namespace Player
             //joinGameConv.Start();
             //while (joinGameConv.IsRunning) Thread.Sleep(0);
 
-            while (KeepGoing)
+            while (Status == "Running")
             {
                 Thread.Sleep(0);
             }

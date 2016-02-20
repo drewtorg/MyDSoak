@@ -37,8 +37,7 @@ namespace Player
                 // PlayerForm form = new PlayerForm();
                 // player.Subscribe(form);
                 // Application.Run(form);
-                Thread.Sleep(5000);
-                player.Stop();
+                while (player.Status == "Running") Thread.Sleep(0);
             }
         }
     }

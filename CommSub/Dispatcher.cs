@@ -42,6 +42,7 @@ namespace CommSub
                         {
                             Conversation conversation = CommSubsystem.ConversationFactory.CreateFromMessageType(envelope.Message.GetType());
                             conversation.ReceivedEnvelope = envelope;
+                            conversation.CommSubsystem = CommSubsystem;
 
                             Logger.Debug("Starting a new Conversation");
 
