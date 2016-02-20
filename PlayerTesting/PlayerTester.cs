@@ -29,7 +29,7 @@ namespace PlayerTesting
                 FirstName = "TestFirst",
                 LastName = "TestLast"
             };
-            Player.Player player = new Player.Player("127.0.0.1:12000", info);
+            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
 
             Assert.That(player.Game, Is.Null);
             Assert.That(player.Identity, Is.EqualTo(info));
@@ -48,7 +48,7 @@ namespace PlayerTesting
                 FirstName = "TestFirst",
                 LastName = "TestLast"
             };
-            Player.Player player = new Player.Player("127.0.0.1:12000", info);
+            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
 
             IObserver form = new PlayerForm();
 
@@ -76,7 +76,7 @@ namespace PlayerTesting
                 FirstName = "TestFirst",
                 LastName = "TestLast"
             };
-            Player.Player player = new Player.Player("127.0.0.1:12000", info);
+            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
 
             IObserver form = new PlayerForm();
             IObserver form2 = new PlayerForm();
@@ -256,7 +256,7 @@ namespace PlayerTesting
         }
     }
 
-    public class TestablePlayer : Player.Player
+    public class TestablePlayer : Player.OldPlayer
     {
         public TestablePlayer(string endpoint, IdentityInfo info) : base(endpoint, info) { }
 

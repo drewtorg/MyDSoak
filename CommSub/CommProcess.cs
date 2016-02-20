@@ -16,7 +16,7 @@ namespace CommSub
 
         protected override void Process(object state)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

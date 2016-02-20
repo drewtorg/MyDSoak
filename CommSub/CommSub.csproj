@@ -48,20 +48,18 @@
     <Compile Include="CommSubsystem.cs" />
     <Compile Include="Communicator.cs" />
     <Compile Include="CommProcessState.cs" />
-    <Compile Include="Conversation\Conversation.cs" />
-    <Compile Include="Conversation\ConversationFactory.cs" />
-    <Compile Include="Conversation\InitiatorOneWayConversation.cs" />
-    <Compile Include="Conversation\ResponderOneWayConversation.cs" />
+    <Compile Include="Conversations\Conversation.cs" />
+    <Compile Include="Conversations\ConversationFactory.cs" />
+    <Compile Include="Conversations\InitiatorOneWayConversation.cs" />
+    <Compile Include="Conversations\ResponderOneWayConversation.cs" />
     <Compile Include="Dispatcher.cs" />
-    <Compile Include="Doer.cs" />
     <Compile Include="Envelope.cs" />
     <Compile Include="EnvelopeQueue.cs" />
     <Compile Include="EnvelopeQueueDictionary.cs" />
-    <Compile Include="Conversation\InitiatorRRConversation.cs" />
-    <Compile Include="Listener.cs" />
+    <Compile Include="Conversations\InitiatorRRConversation.cs" />
     <Compile Include="ProcessAddressBook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Conversation\ResponderRRConversation.cs" />
+    <Compile Include="Conversations\ResponderRRConversation.cs" />
     <Compile Include="RuntimeOptions.cs" />
   </ItemGroup>
   <ItemGroup>

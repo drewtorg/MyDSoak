@@ -75,7 +75,7 @@ namespace Player
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                Player player = new Player(options.EndPoint, info);
+                OldPlayer player = new OldPlayer(options.EndPoint, info);
                 PlayerForm form = new PlayerForm();
                 player.Subscribe(form);
                 Application.Run(form);

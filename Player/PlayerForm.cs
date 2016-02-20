@@ -12,7 +12,7 @@ namespace Player
 {
     public partial class PlayerForm : Form, IObserver
     {
-        public Player Player { get; set; }
+        public OldPlayer Player { get; set; }
         private bool started { get; set; }
 
         public PlayerForm()
@@ -39,9 +39,9 @@ namespace Player
 
         public void Update(ISubject subject)
         {
-            if(subject is Player)
+            if(subject is OldPlayer)
             {
-                Player player = subject as Player;
+                OldPlayer player = subject as OldPlayer;
                 Player = player;
 
                 UpdateDisplay();
@@ -49,7 +49,7 @@ namespace Player
         }
         public void Remove(ISubject subject)
         {
-            if(subject is Player && ((Player)subject).Equals(Player))
+            if(subject is OldPlayer && ((OldPlayer)subject).Equals(Player))
                 Player = null;
         }
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using Utils;
 
-namespace CommSub.Conversation
+namespace CommSub.Conversations
 {
     public abstract class ConversationFactory
     {
@@ -18,55 +18,59 @@ namespace CommSub.Conversation
 
         private Dictionary<Type, Type> typeMapping;
 
-        protected void Add(Type messageType, Type conversationType)
+        protected void AddTypeMapping(Type messageType, Type conversationType)
         {
             typeMapping.Add(messageType, conversationType);
-            typeMapping.Add(conversationType, messageType);
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             typeMapping = new Dictionary<Type, Type>();
             DefaultMaxRetries = 3;
             DefaultTimeOut = 3000;
+
+            InitTypeMappings();
         }
+
+        protected abstract void InitTypeMappings();
 
         public ConversationFactory()
         {
             Initialize();
         }
 
-
-        public Conversation CreateFromMessageType(Type type)
+        public bool MessageCanStartConversation(Type messageType)
         {
-            return CreateFromType(type);
+            return typeMapping.ContainsKey(messageType);
         }
 
-        private Conversation CreateFromType(Type type)
+        public virtual Conversation CreateFromMessageType(Type messageType)
         {
-            Type convType = null;
-            if (typeMapping.TryGetValue(type, out convType))
+            return CreateFromConversationType(typeMapping[messageType]);
+        }
+
+        public virtual Conversation CreateFromConversationType(Type convType)
+        {
+            Conversation conv = null;
+
+            if (typeMapping.ContainsValue(convType))
             {
                 Func<Conversation> ConversationCreator = Expression.Lambda<Func<Conversation>>(
                    Expression.New(convType.GetConstructor(Type.EmptyTypes))
                  ).Compile();
 
-                Conversation conv = ConversationCreator();
+                conv = ConversationCreator();
                 conv.Timeout = DefaultTimeOut;
                 conv.Tries = DefaultMaxRetries;
+
+                //TODO: Figure out what ID to assigna new conversation
                 conv.Id = new MessageNumber()
                 {
                     Pid = ObjectIdGenerator.Instance.GetNextIdNumber(),
                     Seq = 0
                 };
-                return conv;
             }
-            return null;
-        }
-
-        public Conversation CreateFromConversationType(Type type)
-        {
-            return CreateFromType(type);
+            return conv;
         }
 
     }

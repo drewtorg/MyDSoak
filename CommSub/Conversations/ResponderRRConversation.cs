@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommSub.Conversation
+namespace CommSub.Conversations
 {
     public class ResponderRRConversation : Conversation
     {
-        public override bool Execute()
+        protected override void Process(object state)
         {
-            return false;
+            throw new NotImplementedException();
         }
     }
 }

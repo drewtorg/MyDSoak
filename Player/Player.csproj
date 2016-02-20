@@ -56,8 +56,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Conversations\AliveConversation.cs" />
+    <Compile Include="Conversations\GameListConversation.cs" />
+    <Compile Include="Conversations\JoinGameConversation.cs" />
+    <Compile Include="Conversations\LoginConversation.cs" />
+    <Compile Include="Conversations\LogoutConversation.cs" />
+    <Compile Include="Conversations\PlayerConversationFactory.cs" />
     <Compile Include="IObserver.cs" />
     <Compile Include="ISubject.cs" />
+    <Compile Include="OldPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerForm.cs">
       <SubType>Form</SubType>
@@ -81,6 +88,14 @@
     <ProjectReference Include="..\..\cs5200s16-shared\DSoak\SharedObjects\SharedObjects.csproj">
       <Project>{67fea8d0-4871-49d4-aa38-217f63934d26}</Project>
       <Name>SharedObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Utils\Utils.csproj">
+      <Project>{3239fcca-21eb-4b04-b8ad-c442491e463e}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommSub\CommSub.csproj">
+      <Project>{40e2924b-b431-4753-bdfd-ec73baa94f31}</Project>
+      <Name>CommSub</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

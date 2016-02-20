@@ -28,14 +28,15 @@ namespace CommSub
 
         public Envelope Receive(int timeout)
         {
-            //return EnvelopeQueueDictionary.Instance.GetByConversationId(convId).Dequeue(timeout);
             client.Client.ReceiveTimeout = timeout;
             IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
             byte[] bytes = client.Receive(ref ep);
 
+            Envelope envelope = null;
+
             if (bytes != null)
             {
-                return new Envelope()
+                envelope = new Envelope()
                 {
                     Message = Message.Decode(bytes),
                     Ep = new PublicEndPoint()
@@ -44,7 +45,7 @@ namespace CommSub
                     }
                 };
             }
-            return null;
+            return envelope;
         }
     }
 }

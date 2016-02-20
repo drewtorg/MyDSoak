@@ -23,6 +23,7 @@ namespace CommSub
         }
 
         public void Enqueue(Envelope envelope) => queue.Enqueue(envelope);
+
         public Envelope Dequeue(int timeout)
         {
             Envelope result = null;

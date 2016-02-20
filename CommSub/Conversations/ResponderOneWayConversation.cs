@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommSub.Conversation
+namespace CommSub.Conversations
 {
     public class ResponderOneWayConversation : Conversation
     {
-        public override bool Execute()
+        protected override void Process(object state)
         {
             throw new NotImplementedException();
         }

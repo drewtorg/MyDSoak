@@ -5,33 +5,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommSub.Conversation
+namespace CommSub.Conversations
 {
     public abstract class InitiatorRRConversation : Conversation
     {
-        public override bool Execute()
+        protected override void Process(object state)
         {
             Envelope envelope = new Envelope()
             {
-                Message = CreateRequest(),
-                Ep = Responder
+                Message = CreateRequest()
             };
 
             for (int i = 0; i < Tries; i++)
             {
-                Communicator.Send(envelope);
-                Envelope reply = Communicator.Receive(Timeout);
+                CommSubsystem.Communicator.Send(envelope);
+                Envelope reply = CommSubsystem.Communicator.Receive(Timeout);
                 if (reply != null && ValidateConversationState() && ValidateProcessState())
-                    return ProcessReply(envelope);
+                    ProcessReply(envelope);
             }
 
-            return ProcessFailure();
+            ProcessFailure();
         }
 
         protected abstract bool ValidateConversationState();
         protected abstract bool ValidateProcessState();
         protected abstract Request CreateRequest();
-        protected abstract bool ProcessReply(Envelope envelope);
-        protected abstract bool ProcessFailure();
+        protected abstract void ProcessReply(Envelope envelope);
+        protected abstract void ProcessFailure();
     }
 }

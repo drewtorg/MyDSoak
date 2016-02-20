@@ -11,26 +11,11 @@ namespace CommSub
 {
     public class EnvelopeQueueDictionary
     {
-        private static object myLock = new object();
-        private static EnvelopeQueueDictionary instance = null;
         private ConcurrentDictionary<MessageNumber, EnvelopeQueue> dictionary;
 
-        private EnvelopeQueueDictionary()
+        public EnvelopeQueueDictionary()
         {
-            dictionary = new ConcurrentDictionary<MessageNumber, EnvelopeQueue>();
-        }
-
-        public static EnvelopeQueueDictionary Instance
-        {
-            get
-            {
-                lock(myLock)
-                {
-                    if (instance == null)
-                        instance = new EnvelopeQueueDictionary();
-                    return instance;
-                }
-            }
+            dictionary = new ConcurrentDictionary<MessageNumber, EnvelopeQueue>(new MessageNumber.MessageNumberComparer());
         }
 
         public EnvelopeQueue GetByConversationId(MessageNumber label)
@@ -40,14 +25,24 @@ namespace CommSub
             return queue;
         }
 
-        public void CreateQueue()
+        public EnvelopeQueue CreateQueue(MessageNumber queueId)
         {
+            EnvelopeQueue queue = null;
+            dictionary.TryGetValue(queueId, out queue);
 
+            if (queue == null)
+            {
+                queue = new EnvelopeQueue() { QueueId = queueId };
+                dictionary.TryAdd(queueId, queue);
+            }
+
+            return queue;
         }
 
-        public void CloseQueue()
+        public void CloseQueue(MessageNumber queueId)
         {
-
+            EnvelopeQueue queue = null;
+            dictionary.TryRemove(queueId, out queue);
         }
     }
 }
