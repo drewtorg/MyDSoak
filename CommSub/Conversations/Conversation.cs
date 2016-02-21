@@ -20,11 +20,14 @@ namespace CommSub.Conversations
         public CommSubsystem CommSubsystem { get; set; }
         public MessageNumber Id { get; set; }
         public Envelope ReceivedEnvelope { get; set; }
+        public bool Successful { get; set; }
 
         //TODO: review the rules for validation of conversation state
-        protected bool ValidateConversationState()
+        protected virtual bool ValidateConversationState()
         {
             return true;
         }
+
+        protected abstract void Initialize();
     }
 }

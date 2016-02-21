@@ -10,24 +10,24 @@ namespace CommSub.Conversations
     {
         protected override void Process(object state)
         {
-            bool successful = false;
+            Initialize();
+
+            Successful = false;
 
             if (ReceivedEnvelope != null && ValidateConversationState() && ValidateProcessState())
             {
                 ProcessRequest();
-                SendReply();
-                successful = true;
+                Successful = SendReply();
             }
             
 
-            if (!successful)
+            if (!Successful)
                 ProcessFailure();
-
-            // is this necessary?
+            
             Stop();
         }
 
-        protected abstract void SendReply();
+        protected abstract bool SendReply();
         protected abstract void ProcessRequest();
         protected abstract bool ValidateProcessState();
         protected abstract void ProcessFailure();

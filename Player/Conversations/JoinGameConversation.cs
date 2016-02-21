@@ -9,6 +9,7 @@ using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using log4net;
 using SharedObjects;
+using Player.States;
 
 namespace Player.Conversations
 {
@@ -16,13 +17,19 @@ namespace Player.Conversations
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(JoinGameConversation));
 
-        public Player Player { get; set; }
+        public PlayerState PlayerState { get; set; }
+
+        protected override void Initialize()
+        {
+            Label = "JoinGameConversation";
+            SendTo = PlayerState.PotentialGames[0].GameManager.EndPoint;
+        }
 
         protected override Request CreateRequest()
         {
-            int pid = Player.PlayerState.Process.ProcessId;
-            int seq = Player.PlayerState.IDGen.GetNextIdNumber();
-            GameInfo game = Player.PlayerState.PotentialGames[0];
+            int pid = PlayerState.Process.ProcessId;
+            int seq = PlayerState.IDGen.GetNextIdNumber();
+            GameInfo game = PlayerState.PotentialGames[0];
 
             return new JoinGameRequest()
             {
@@ -37,7 +44,7 @@ namespace Player.Conversations
                     Seq = seq
                 },
                 GameId = game.GameId,
-                Player = Player.PlayerState.Process
+                Player = PlayerState.Process
             };
         }
 
@@ -45,23 +52,25 @@ namespace Player.Conversations
         {
             Logger.Debug("JoinGameConversation Failed");
 
-            Player.PlayerState.PotentialGames.RemoveAt(0);
+            PlayerState.PotentialGames.RemoveAt(0);
         }
 
-        protected override void ProcessReply(Envelope envelope)
+        protected override bool ProcessReply(Envelope envelope)
         {
             JoinGameReply reply = envelope.Message as JoinGameReply;
 
             if (reply.Success)
             {
-                Player.PlayerState.Process.Status = ProcessInfo.StatusCode.JoinedGame;
-                Player.PlayerState.Game = Player.PlayerState.PotentialGames[0];
-                Player.PlayerState.Process.LifePoints = (short)reply.InitialLifePoints;
+                PlayerState.Process.Status = ProcessInfo.StatusCode.JoinedGame;
+                PlayerState.Game = PlayerState.PotentialGames[0];
+                PlayerState.Process.LifePoints = (short)reply.InitialLifePoints;
             }
             else
             {
-                Player.PlayerState.PotentialGames.RemoveAt(0);
+                PlayerState.PotentialGames.RemoveAt(0);
             }
+
+            return reply.Success;
         }
 
         protected override bool ValidateProcessState()

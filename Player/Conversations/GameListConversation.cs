@@ -9,6 +9,7 @@ using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using SharedObjects;
 using log4net;
+using Player.States;
 
 namespace Player.Conversations
 {
@@ -16,12 +17,18 @@ namespace Player.Conversations
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(GameListConversation));
 
-        public Player Player { get; set; }
+        public PlayerState PlayerState { get; set; }
+
+        protected override void Initialize()
+        {
+            Label = "GameListConversation";
+            SendTo = PlayerState.RegistryEndPoint;
+        }
 
         protected override Request CreateRequest()
         {
-            int pid = Player.PlayerState.Process.ProcessId;
-            int seq = Player.PlayerState.IDGen.GetNextIdNumber();
+            int pid = PlayerState.Process.ProcessId;
+            int seq = PlayerState.IDGen.GetNextIdNumber();
             return new GameListRequest()
             {
                 ConvId = new MessageNumber()
@@ -43,13 +50,15 @@ namespace Player.Conversations
             Logger.Debug("GameListConversation Failed");
         }
 
-        protected override void ProcessReply(Envelope envelope)
+        protected override bool ProcessReply(Envelope envelope)
         {
             GameListReply reply = envelope.Message as GameListReply;
 
 
-            Player.PlayerState.Process.Status = ProcessInfo.StatusCode.JoiningGame;
-            Player.PlayerState.PotentialGames = reply.GameInfo.ToList();
+            PlayerState.Process.Status = ProcessInfo.StatusCode.JoiningGame;
+            PlayerState.PotentialGames = reply.GameInfo.ToList();
+
+            return true;
         }
 
         protected override bool ValidateProcessState()

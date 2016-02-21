@@ -73,9 +73,13 @@
       <DependentUpon>PlayerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerOptions.cs" />
-    <Compile Include="PlayerState.cs" />
+    <Compile Include="States\InitializingPlayerState.cs" />
+    <Compile Include="States\JoinedGamePlayerState.cs" />
+    <Compile Include="States\JoiningGamePlayerState.cs" />
+    <Compile Include="States\PlayerState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="States\RegisteredPlayerState.cs" />
     <Compile Include="ThreadHelper.cs" />
   </ItemGroup>
   <ItemGroup>

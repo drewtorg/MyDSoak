@@ -9,6 +9,7 @@ using Messages.RequestMessages;
 using SharedObjects;
 using log4net;
 using Messages.ReplyMessages;
+using Player.States;
 
 namespace Player.Conversations
 {
@@ -16,12 +17,18 @@ namespace Player.Conversations
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(LogoutConversation));
 
-        public Player Player { get; set; }
+        public PlayerState PlayerState { get; set; }
+
+        protected override void Initialize()
+        {
+            Label = "Logout Conversation";
+            SendTo = PlayerState.RegistryEndPoint; 
+        }
 
         protected override Request CreateRequest()
         {
-            int pid = Player.PlayerState.Process.ProcessId;
-            int seq = Player.PlayerState.IDGen.GetNextIdNumber();
+            int pid = PlayerState.Process.ProcessId;
+            int seq = PlayerState.IDGen.GetNextIdNumber();
 
             return new LogoutRequest()
             {
@@ -43,12 +50,12 @@ namespace Player.Conversations
             Logger.Debug("LogoutConversation Failed");
         }
 
-        protected override void ProcessReply(Envelope envelope)
+        protected override bool ProcessReply(Envelope envelope)
         {
             Reply reply = envelope.Message as Reply;
 
-            if (reply.Success)
-                Logger.Debug("Successful Logout");
+            Logger.Debug("Successful Logout");
+            return reply.Success;
         }
 
         protected override bool ValidateProcessState()

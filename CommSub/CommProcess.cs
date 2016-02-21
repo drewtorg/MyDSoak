@@ -18,6 +18,10 @@ namespace CommSub
 
         protected override void Process(object state)
         {
+            while (KeepGoing)
+            {
+                State.Do();
+            }
         }
     }
 }

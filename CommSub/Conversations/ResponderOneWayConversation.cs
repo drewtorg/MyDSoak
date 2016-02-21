@@ -6,11 +6,21 @@ using System.Threading.Tasks;
 
 namespace CommSub.Conversations
 {
-    public class ResponderOneWayConversation : Conversation
+    public abstract class ResponderOneWayConversation : Conversation
     {
         protected override void Process(object state)
         {
-            throw new NotImplementedException();
+            Initialize();
+
+            if (ReceivedEnvelope != null && ValidateProcessState())
+            {
+                ProcessMessage();
+            }
+
+            Stop();
         }
+
+        protected abstract void ProcessMessage();
+        protected abstract bool ValidateProcessState();
     }
 }

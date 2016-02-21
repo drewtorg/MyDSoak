@@ -11,7 +11,9 @@ namespace CommSub.Conversations
     {
         protected override void Process(object state)
         {
-            bool successful = false;
+            Initialize();
+
+            Successful = false;
 
             //setup the envelope
             Envelope request = new Envelope()
@@ -20,10 +22,10 @@ namespace CommSub.Conversations
                 Ep = SendTo
             };
 
-           //make a new queue for this conversation
+            //make a new queue for this conversation
             EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(request.Message.ConvId);
             
-            for (int i = 0; i < Tries && !successful; i++)
+            for (int i = 0; i < Tries && !Successful; i++)
             {
                 //send out the envelope
                 CommSubsystem.Communicator.Send(request);
@@ -33,15 +35,13 @@ namespace CommSub.Conversations
 
                 if (reply != null && ValidateConversationState() && ValidateProcessState())
                 {
-                    ProcessReply(reply);
-                    successful = true;
+                    Successful = ProcessReply(reply);
                 }
             }
 
-            if (!successful)
+            if (!Successful)
                 ProcessFailure();
-
-            // is this necessary?
+            
             Stop();
         }
 
@@ -50,6 +50,6 @@ namespace CommSub.Conversations
         protected abstract bool ValidateProcessState();
         protected abstract void ProcessFailure();
         protected abstract Request CreateRequest();
-        protected abstract void ProcessReply(Envelope envelope);
+        protected abstract bool ProcessReply(Envelope envelope);
     }
 }

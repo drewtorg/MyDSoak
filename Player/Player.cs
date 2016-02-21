@@ -14,6 +14,7 @@ using SharedObjects;
 
 using Player.Conversations;
 using log4net;
+using Player.States;
 
 namespace Player
 {
@@ -30,7 +31,7 @@ namespace Player
             CommSubsystem = new CommSubsystem(new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 3000 });
             CommSubsystem.Initialize();
 
-            State = new PlayerState()
+            State = new InitializingPlayerState()
             {
                 Identity = new IdentityInfo()
                 {
@@ -39,49 +40,9 @@ namespace Player
                     FirstName = options.FirstName,
                     LastName = options.LastName
                 },
-                RegistryEndPoint = new PublicEndPoint(options.EndPoint)
+                RegistryEndPoint = new PublicEndPoint(options.EndPoint),
+                Player = this
             };
-        }
-
-        protected override void Process(object state)
-        {
-            base.Process(state);
-
-            Console.WriteLine("Starting LoginConversation");
-
-            LoginConversation loginConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LoginConversation)) as LoginConversation;
-            loginConv.Player = this;
-            loginConv.Label = "LoginConversation";
-            loginConv.SendTo = PlayerState.RegistryEndPoint;
-            loginConv.Start();
-            while (loginConv.Status == "Running") Thread.Sleep(0);
-
-            Console.WriteLine("Finished LoginConversation");
-
-            GameListConversation gameListConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(GameListConversation)) as GameListConversation;
-            gameListConv.Player = this;
-            gameListConv.Label = "GameListConversation";
-            gameListConv.SendTo = PlayerState.RegistryEndPoint;
-            gameListConv.Start();
-            while (gameListConv.Status == "Running") Thread.Sleep(0);
-
-            JoinGameConversation joinGameConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(JoinGameConversation)) as JoinGameConversation;
-            joinGameConv.Player = this;
-            joinGameConv.Label = "JoinGameConversation";
-            joinGameConv.SendTo = PlayerState.PotentialGames[0].GameManager.EndPoint;
-            joinGameConv.Start();
-            while (joinGameConv.Status == "Running") Thread.Sleep(0);
-
-            Thread.Sleep(5000);
-
-            LogoutConversation logoutConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LogoutConversation)) as LogoutConversation;
-            logoutConv.Player = this;
-            logoutConv.Label = "LogoutConversation";
-            logoutConv.SendTo = PlayerState.RegistryEndPoint;
-            logoutConv.Start();
-            while (logoutConv.Status == "Running") Thread.Sleep(0);
-
-            Stop();
         }
 
         public override void Start()

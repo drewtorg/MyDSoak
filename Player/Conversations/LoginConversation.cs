@@ -9,6 +9,7 @@ using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using SharedObjects;
 using log4net;
+using Player.States;
 
 namespace Player.Conversations
 {
@@ -16,14 +17,21 @@ namespace Player.Conversations
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginConversation));
 
-        public Player Player { get; set; }
+        public PlayerState PlayerState { get; set; }
+
+        protected override void Initialize()
+        {
+            Label = "LoginConversation";
+            SendTo = PlayerState.RegistryEndPoint;
+        }
+
         protected override Request CreateRequest()
         {
             return new LoginRequest()
             {
                 ConvId = new MessageNumber() { Pid = 0, Seq = 1 },
                 MsgId = new MessageNumber() { Pid = 0, Seq = 1 },
-                Identity = Player.PlayerState.Identity,
+                Identity = PlayerState.Identity,
                 ProcessLabel = "Drew Torgeson",
                 ProcessType = ProcessInfo.ProcessType.Player
             };
@@ -34,12 +42,12 @@ namespace Player.Conversations
             Logger.Debug("Registry did not respond to Login");
         }
 
-        protected override void ProcessReply(Envelope envelope)
+        protected override bool ProcessReply(Envelope envelope)
         {
             LoginReply reply = envelope.Message as LoginReply;
 
-            Player.PlayerState.Process = reply.ProcessInfo;
-            Player.PlayerState.Process.Status = ProcessInfo.StatusCode.Registered;
+            PlayerState.Process = reply.ProcessInfo;
+            return true;
         }
 
         protected override bool ValidateProcessState()

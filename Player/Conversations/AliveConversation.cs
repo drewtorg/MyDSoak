@@ -17,6 +17,11 @@ namespace Player.Conversations
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AliveConversation));
 
+        protected override void Initialize()
+        {
+            Label = "AliveConversation";
+        }
+
         protected override void ProcessFailure()
         {
             Logger.Debug("Alive Reply failed");
@@ -27,7 +32,7 @@ namespace Player.Conversations
             // AliveRequest doesn't require any processing
         }
 
-        protected override void SendReply()
+        protected override bool SendReply()
         {
             Envelope reply = new Envelope()
             {
@@ -43,6 +48,8 @@ namespace Player.Conversations
 
             CommSubsystem.Communicator.Send(reply);
             Logger.Debug("Sent an Alive Reply to the registry");
+
+            return true;
         }
 
         protected override bool ValidateProcessState()

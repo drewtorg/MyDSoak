@@ -13,6 +13,9 @@ namespace Player
 {
     public class PlayerOptions : RuntimeOptions
     {
+        [Option('p', Required = true, HelpText = "The Registry's communication endpoint")]
+        public string EndPoint { get; set; }
+
         [Option('f', Required = true, HelpText = "The Player's first name")]
         public string FirstName { get; set; }
 
@@ -24,14 +27,5 @@ namespace Player
 
         [Option('a', Required = true, HelpText = "The Player's alias")]
         public string Alias { get; set; }
-        
-        public override void SetDefaults()
-        {
-            EndPoint = "127.0.0.1:8080";
-            FirstName = "Andrew";
-            LastName = "Torgeson";
-            ANumber = "A01519794";
-            Alias = "alt";
-        }
     }
 }

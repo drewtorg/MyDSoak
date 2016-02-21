@@ -11,11 +11,6 @@ namespace CommSub
 {
     public abstract class RuntimeOptions
     {
-        public abstract void SetDefaults();
-
-        [Option('p', Required = true, HelpText = "The Registry's communication endpoint")]
-        public string EndPoint { get; set; }
-
         [HelpOption]
         public string GetUsage()
         {
