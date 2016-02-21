@@ -19,6 +19,11 @@ namespace CommSub
         public ProcessAddressBook ProcessAddressBook { get; set; }
         public ConversationFactory ConversationFactory { get; set; }
 
+        public CommSubsystem(ConversationFactory factory)
+        {
+            ConversationFactory = factory;
+        }
+
         public void Initialize()
         {
             Logger.Debug("Initializing Commsubsystem");
@@ -27,6 +32,7 @@ namespace CommSub
             EnvelopeQueueDictionary = new EnvelopeQueueDictionary();
             Dispatcher = new Dispatcher() { CommSubsystem = this, Label = "Dispatcher" };
             ProcessAddressBook = new ProcessAddressBook();
+            ConversationFactory.CommSubsystem = this;
         }
 
         public void Start()

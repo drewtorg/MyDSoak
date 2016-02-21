@@ -15,6 +15,7 @@ namespace CommSub.Conversations
     {
         public int DefaultMaxRetries { get; set; }
         public int DefaultTimeOut { get; set; }
+        public CommSubsystem CommSubsystem { get; set; }
 
         private Dictionary<Type, Type> typeMapping;
 
@@ -23,7 +24,7 @@ namespace CommSub.Conversations
             typeMapping.Add(messageType, conversationType);
         }
 
-        public virtual void Initialize()
+        public void Initialize()
         {
             typeMapping = new Dictionary<Type, Type>();
             DefaultMaxRetries = 3;
@@ -62,9 +63,9 @@ namespace CommSub.Conversations
                 conv = ConversationCreator();
                 conv.Timeout = DefaultTimeOut;
                 conv.Tries = DefaultMaxRetries;
+                conv.CommSubsystem = CommSubsystem;
             }
             return conv;
         }
-
     }
 }

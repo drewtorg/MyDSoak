@@ -6,29 +6,54 @@ using System.Threading.Tasks;
 using CommSub;
 using CommSub.Conversations;
 using Messages.RequestMessages;
+using SharedObjects;
+using log4net;
+using Messages.ReplyMessages;
 
 namespace Player.Conversations
 {
     public class LogoutConversation : InitiatorRRConversation
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(LogoutConversation));
+
+        public Player Player { get; set; }
+
         protected override Request CreateRequest()
         {
-            throw new NotImplementedException();
+            int pid = Player.PlayerState.Process.ProcessId;
+            int seq = Player.PlayerState.IDGen.GetNextIdNumber();
+
+            return new LogoutRequest()
+            {
+                ConvId = new MessageNumber()
+                {
+                    Pid = pid,
+                    Seq = seq
+                },
+                MsgId = new MessageNumber()
+                {
+                    Pid = pid,
+                    Seq = seq
+                }
+            };
         }
 
         protected override void ProcessFailure()
         {
-            throw new NotImplementedException();
+            Logger.Debug("LogoutConversation Failed");
         }
 
         protected override void ProcessReply(Envelope envelope)
         {
-            throw new NotImplementedException();
+            Reply reply = envelope.Message as Reply;
+
+            if (reply.Success)
+                Logger.Debug("Successful Logout");
         }
 
         protected override bool ValidateProcessState()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

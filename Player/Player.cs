@@ -27,11 +27,9 @@ namespace Player
         {
             Label = "Player";
             Options = options;
-            CommSubsystem = new CommSubsystem()
-            {
-                ConversationFactory = new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 3000 } 
-            };
+            CommSubsystem = new CommSubsystem(new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 3000 });
             CommSubsystem.Initialize();
+
             State = new PlayerState()
             {
                 Identity = new IdentityInfo()
@@ -54,25 +52,36 @@ namespace Player
             LoginConversation loginConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LoginConversation)) as LoginConversation;
             loginConv.Player = this;
             loginConv.Label = "LoginConversation";
-            loginConv.CommSubsystem = CommSubsystem;
             loginConv.SendTo = PlayerState.RegistryEndPoint;
             loginConv.Start();
             while (loginConv.Status == "Running") Thread.Sleep(0);
 
             Console.WriteLine("Finished LoginConversation");
 
-            //Conversation gameListConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(GameListConversation));
-            //gameListConv.Start();
-            //while (gameListConv.IsRunning) Thread.Sleep(0);
+            GameListConversation gameListConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(GameListConversation)) as GameListConversation;
+            gameListConv.Player = this;
+            gameListConv.Label = "GameListConversation";
+            gameListConv.SendTo = PlayerState.RegistryEndPoint;
+            gameListConv.Start();
+            while (gameListConv.Status == "Running") Thread.Sleep(0);
 
-            //Conversation joinGameConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(JoinGameConversation));
-            //joinGameConv.Start();
-            //while (joinGameConv.IsRunning) Thread.Sleep(0);
+            JoinGameConversation joinGameConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(JoinGameConversation)) as JoinGameConversation;
+            joinGameConv.Player = this;
+            joinGameConv.Label = "JoinGameConversation";
+            joinGameConv.SendTo = PlayerState.PotentialGames[0].GameManager.EndPoint;
+            joinGameConv.Start();
+            while (joinGameConv.Status == "Running") Thread.Sleep(0);
 
-            while (Status == "Running")
-            {
-                Thread.Sleep(0);
-            }
+            Thread.Sleep(5000);
+
+            LogoutConversation logoutConv = CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LogoutConversation)) as LogoutConversation;
+            logoutConv.Player = this;
+            logoutConv.Label = "LogoutConversation";
+            logoutConv.SendTo = PlayerState.RegistryEndPoint;
+            logoutConv.Start();
+            while (logoutConv.Status == "Running") Thread.Sleep(0);
+
+            Stop();
         }
 
         public override void Start()
