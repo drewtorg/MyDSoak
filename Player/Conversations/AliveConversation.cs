@@ -26,7 +26,7 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Logger.Debug("Alive Reply failed");
+            Logger.Warn("Alive Reply failed");
         }
 
         protected override void ProcessRequest()

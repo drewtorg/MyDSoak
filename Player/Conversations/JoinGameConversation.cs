@@ -40,7 +40,7 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Logger.Debug("JoinGameConversation Failed");
+            Logger.Warn("JoinGameConversation Failed");
 
             PlayerState.PotentialGames.RemoveAt(0);
         }
@@ -65,7 +65,7 @@ namespace Player.Conversations
 
         protected override bool ValidateProcessState()
         {
-            return true;
+            return PlayerState is JoiningGamePlayerState;
         }
     }
 }

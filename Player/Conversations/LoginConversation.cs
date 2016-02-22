@@ -39,7 +39,7 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Logger.Debug("Registry did not respond to Login");
+            Logger.Warn("Registry did not respond to Login");
         }
 
         protected override bool ProcessReply(Envelope envelope)
@@ -53,7 +53,7 @@ namespace Player.Conversations
 
         protected override bool ValidateProcessState()
         {
-            return true;
+            return PlayerState is InitializingPlayerState;
         }
     }
 }

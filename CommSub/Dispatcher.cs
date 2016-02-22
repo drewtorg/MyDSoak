@@ -29,36 +29,32 @@ namespace CommSub
                 EnvelopeQueue queue = null;
                 if (envelope != null)
                 {
-                    Logger.Debug("Looking for a queue for the Message");
-
                     queue = CommSubsystem.EnvelopeQueueDictionary.GetByConversationId(envelope.Message.ConvId);
 
                     //when a queue is null, it's time to create a new conversation
                     if (queue == null)
                     {
-                        Logger.Debug("Checking if the Message can Start a Conversation");
-
                         if (CommSubsystem.ConversationFactory.MessageCanStartConversation(envelope.Message.GetType()))
                         {
                             Conversation conversation = CommSubsystem.ConversationFactory.CreateFromMessageType(envelope.Message.GetType());
                             conversation.ReceivedEnvelope = envelope;
                             conversation.CommSubsystem = CommSubsystem;
 
-                            Logger.Debug("Starting a new Conversation");
+                            Logger.Debug("Starting a new ResponderConversation");
 
                             conversation.Start();
                         }
                         else
                         {
                             //this message can't start a conversation and can't be replied too. It's been sent to the wrong place.
-                            Logger.Debug("Received foreign Message");
+                            Logger.Warn("Received foreign Message");
                         }
                     }
                     else
                     {
                         queue.Enqueue(envelope);
 
-                        Logger.Debug("Queued up the Message for a Conversation");
+                        Logger.Debug("Put Message in Queue " + queue.QueueId.ToString());
                     }
                 }
 

@@ -37,7 +37,7 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Logger.Debug("GameListConversation Failed");
+            Logger.Warn("GameListConversation Failed");
         }
 
         protected override bool ProcessReply(Envelope envelope)
@@ -53,7 +53,7 @@ namespace Player.Conversations
 
         protected override bool ValidateProcessState()
         {
-            return true;
+            return PlayerState is RegisteredPlayerState;
         }
     }
 }

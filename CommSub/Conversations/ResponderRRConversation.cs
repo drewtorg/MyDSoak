@@ -16,7 +16,7 @@ namespace CommSub.Conversations
 
             Successful = false;
 
-            if (ReceivedEnvelope != null && ValidateConversationState() && ValidateProcessState())
+            if (ReceivedEnvelope != null && ValidateProcessState())
             {
                 ProcessRequest();
                 Envelope reply = new Envelope()

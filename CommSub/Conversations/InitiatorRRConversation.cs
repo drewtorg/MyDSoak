@@ -17,28 +17,36 @@ namespace CommSub.Conversations
 
             Successful = false;
 
-            //setup the envelope
-            Envelope request = new Envelope()
+            // assure the process is in the correct state to send this request
+            if (ValidateProcessState())
             {
-                Message = CreateRequest(),
-                Ep = SendTo
-            };
 
-            //make a new queue for this conversation
-            EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(request.Message.ConvId);
-            
-            for (int i = 0; i < Tries && !Successful; i++)
-            {
-                //send out the envelope
-                CommSubsystem.Communicator.Send(request);
-
-                //see if there is a reply in the queue
-                Envelope reply = queue.Dequeue(Timeout);
-
-                if (reply != null && ValidateConversationState() && ValidateProcessState())
+                //setup the envelope
+                Envelope request = new Envelope()
                 {
-                    Successful = ProcessReply(reply);
+                    Message = CreateRequest(),
+                    Ep = SendTo
+                };
+
+                //make a new queue for this conversation
+                EnvelopeQueue queue = CommSubsystem.EnvelopeQueueDictionary.CreateQueue(request.Message.ConvId);
+
+                for (int i = 0; i < Tries && !Successful; i++)
+                {
+                    //send out the envelope
+                    CommSubsystem.Communicator.Send(request);
+
+                    //see if there is a reply in the queue
+                    Envelope reply = queue.Dequeue(Timeout);
+
+                    if (reply != null && ValidateConversationState(request.Message.ConvId, reply.Message.ConvId))
+                    {
+                        Successful = ProcessReply(reply);
+                    }
                 }
+
+                //After processing, close the queue that was created
+                CommSubsystem.EnvelopeQueueDictionary.CloseQueue(request.Message.ConvId);
             }
 
             if (!Successful)
@@ -53,5 +61,10 @@ namespace CommSub.Conversations
         protected abstract void ProcessFailure();
         protected abstract Request CreateRequest();
         protected abstract bool ProcessReply(Envelope envelope);
+
+        protected bool ValidateConversationState(MessageNumber requestConvId, MessageNumber replyConvId)
+        {
+            return requestConvId == replyConvId;
+        }
     }
 }

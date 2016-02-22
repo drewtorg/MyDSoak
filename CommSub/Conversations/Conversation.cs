@@ -22,12 +22,6 @@ namespace CommSub.Conversations
         public Envelope ReceivedEnvelope { get; set; }
         public bool Successful { get; set; }
 
-        //TODO: review the rules for validation of conversation state
-        protected virtual bool ValidateConversationState()
-        {
-            return true;
-        }
-
         protected abstract void Initialize();
     }
 }

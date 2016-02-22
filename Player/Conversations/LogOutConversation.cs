@@ -34,7 +34,7 @@ namespace Player.Conversations
 
         protected override void ProcessFailure()
         {
-            Logger.Debug("LogoutConversation Failed");
+            Logger.Warn("LogoutConversation Failed");
         }
 
         protected override bool ProcessReply(Envelope envelope)
@@ -47,7 +47,8 @@ namespace Player.Conversations
 
         protected override bool ValidateProcessState()
         {
-            return true;
+            //a plyaer can log out in any state except the initializing state because it hasn't even logged in yet
+            return !(PlayerState is InitializingPlayerState);
         }
     }
 }
