@@ -27,22 +27,12 @@ namespace Player.Conversations
 
         protected override Request CreateRequest()
         {
-            int pid = PlayerState.Process.ProcessId;
-            int seq = PlayerState.IDGen.GetNextIdNumber();
-            return new GameListRequest()
+            GameListRequest request = new GameListRequest()
             {
-                ConvId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                },
-                MsgId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                },
                 StatusFilter = (int)GameInfo.StatusCode.Available
             };
+            request.InitMessageAndConversationNumbers();
+            return request;
         }
 
         protected override void ProcessFailure()

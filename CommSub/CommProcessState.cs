@@ -10,13 +10,13 @@ namespace CommSub
 { 
     public abstract class CommProcessState
     {
-        public ObjectIdGenerator IDGen { get; }
+        //public ObjectIdGenerator IDGen { get; }
         public ProcessInfo Process { get; set; }
 
-        public CommProcessState()
-        {
-            IDGen = ObjectIdGenerator.Instance;
-        }
+        //public CommProcessState()
+        //{
+        //    IDGen = ObjectIdGenerator.Instance;
+        //}
 
         public abstract void Do();
     }

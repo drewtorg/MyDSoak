@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Messages.ReplyMessages;
+using SharedObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +19,18 @@ namespace CommSub.Conversations
             if (ReceivedEnvelope != null && ValidateConversationState() && ValidateProcessState())
             {
                 ProcessRequest();
-                Successful = SendReply();
+                Envelope reply = new Envelope()
+                {
+                    Message = CreateReply(),
+                    Ep = ReceivedEnvelope.Ep
+                };
+                // the msgNr is the next one for this process
+                // the convId is the same as the requester's convId
+                reply.Message.SetMessageAndConversationNumbers(MessageNumber.Create(), ReceivedEnvelope.Message.ConvId);
+
+                CommSubsystem.Communicator.Send(reply);
+                Successful = true;
             }
-            
 
             if (!Successful)
                 ProcessFailure();
@@ -27,7 +38,7 @@ namespace CommSub.Conversations
             Stop();
         }
 
-        protected abstract bool SendReply();
+        protected abstract Reply CreateReply();
         protected abstract void ProcessRequest();
         protected abstract bool ValidateProcessState();
         protected abstract void ProcessFailure();

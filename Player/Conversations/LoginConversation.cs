@@ -47,6 +47,7 @@ namespace Player.Conversations
             LoginReply reply = envelope.Message as LoginReply;
 
             PlayerState.Process = reply.ProcessInfo;
+            MessageNumber.LocalProcessId = reply.ProcessInfo.ProcessId;
             return true;
         }
 

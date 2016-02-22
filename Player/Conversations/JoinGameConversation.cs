@@ -27,25 +27,15 @@ namespace Player.Conversations
 
         protected override Request CreateRequest()
         {
-            int pid = PlayerState.Process.ProcessId;
-            int seq = PlayerState.IDGen.GetNextIdNumber();
             GameInfo game = PlayerState.PotentialGames[0];
 
-            return new JoinGameRequest()
+            JoinGameRequest request = new JoinGameRequest()
             {
-                ConvId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                },
-                MsgId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                },
                 GameId = game.GameId,
                 Player = PlayerState.Process
             };
+            request.InitMessageAndConversationNumbers();
+            return request;
         }
 
         protected override void ProcessFailure()

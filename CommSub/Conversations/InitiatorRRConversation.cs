@@ -1,4 +1,5 @@
 ﻿using Messages.RequestMessages;
+using SharedObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace CommSub.Conversations
     {
         protected override void Process(object state)
         {
+            //Initialize all variables needed to run a specific conversation
             Initialize();
 
             Successful = false;

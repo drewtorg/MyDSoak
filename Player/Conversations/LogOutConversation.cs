@@ -27,22 +27,9 @@ namespace Player.Conversations
 
         protected override Request CreateRequest()
         {
-            int pid = PlayerState.Process.ProcessId;
-            int seq = PlayerState.IDGen.GetNextIdNumber();
-
-            return new LogoutRequest()
-            {
-                ConvId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                },
-                MsgId = new MessageNumber()
-                {
-                    Pid = pid,
-                    Seq = seq
-                }
-            };
+            LogoutRequest request = new LogoutRequest();
+            request.InitMessageAndConversationNumbers();
+            return request;
         }
 
         protected override void ProcessFailure()

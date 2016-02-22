@@ -10,6 +10,8 @@ using Messages.ReplyMessages;
 using Messages.RequestMessages;
 
 using log4net;
+using Messages;
+using SharedObjects;
 
 namespace Player.Conversations
 {
@@ -32,28 +34,17 @@ namespace Player.Conversations
             // AliveRequest doesn't require any processing
         }
 
-        protected override bool SendReply()
+        protected override Reply CreateReply()
         {
-            Envelope reply = new Envelope()
+            return new Reply()
             {
-                Message = new Reply()
-                {
-                    ConvId = ReceivedEnvelope.Message.ConvId,
-                    //TODO: figure out how to make a real message number
-                    MsgId = ReceivedEnvelope.Message.ConvId,
-                    Success = true
-                },
-                Ep = ReceivedEnvelope.Ep
+                Success = true
             };
-
-            CommSubsystem.Communicator.Send(reply);
-            Logger.Debug("Sent an Alive Reply to the registry");
-
-            return true;
         }
 
         protected override bool ValidateProcessState()
         {
+            // The player is always in a valid state to be alive
             return true;
         }
     }
