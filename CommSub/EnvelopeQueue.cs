@@ -17,23 +17,30 @@ namespace CommSub
 
         private ConcurrentQueue<Envelope> queue;
 
+        private AutoResetEvent waitEvent;
+
         public EnvelopeQueue()
         {
             queue = new ConcurrentQueue<Envelope>();
+            waitEvent = new AutoResetEvent(false);
         }
 
-        public void Enqueue(Envelope envelope) => queue.Enqueue(envelope);
+        public void Enqueue(Envelope envelope)
+        {
+            if (envelope != null && !queue.Contains(envelope))
+            {
+                queue.Enqueue(envelope);
+                waitEvent.Set();
+            }
+        }
 
         public Envelope Dequeue(int timeout)
         {
             Envelope result = null;
-            bool successful = queue.TryDequeue(out result);
 
-            if(!successful)
-            {
-                Thread.Sleep(timeout);
+            if (waitEvent.WaitOne(timeout))
                 queue.TryDequeue(out result);
-            }
+            
             return result;
         }
     }

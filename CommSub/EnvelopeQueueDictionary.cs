@@ -18,22 +18,27 @@ namespace CommSub
             dictionary = new ConcurrentDictionary<MessageNumber, EnvelopeQueue>(new MessageNumber.MessageNumberComparer());
         }
 
-        public EnvelopeQueue GetByConversationId(MessageNumber label)
+        public EnvelopeQueue GetByConversationId(MessageNumber convId)
         {
             EnvelopeQueue queue = null;
-            dictionary.TryGetValue(label, out queue);
+            if(convId != null)
+                dictionary.TryGetValue(convId, out queue);
             return queue;
         }
 
         public EnvelopeQueue CreateQueue(MessageNumber queueId)
         {
             EnvelopeQueue queue = null;
-            dictionary.TryGetValue(queueId, out queue);
 
-            if (queue == null)
+            if (queueId != null)
             {
-                queue = new EnvelopeQueue() { QueueId = queueId };
-                dictionary.TryAdd(queueId, queue);
+                dictionary.TryGetValue(queueId, out queue);
+
+                if (queue == null)
+                {
+                    queue = new EnvelopeQueue() { QueueId = queueId };
+                    dictionary.TryAdd(queueId, queue);
+                }
             }
 
             return queue;
@@ -41,8 +46,11 @@ namespace CommSub
 
         public void CloseQueue(MessageNumber queueId)
         {
-            EnvelopeQueue queue = null;
-            dictionary.TryRemove(queueId, out queue);
+            if (queueId != null)
+            {
+                EnvelopeQueue queue = null;
+                dictionary.TryRemove(queueId, out queue);
+            }
         }
     }
 }
