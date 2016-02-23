@@ -82,6 +82,18 @@
       <Project>{67fea8d0-4871-49d4-aa38-217f63934d26}</Project>
       <Name>SharedObjects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Utils\Utils.csproj">
+      <Project>{3239fcca-21eb-4b04-b8ad-c442491e463e}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommSubTesting\CommSubTesting.csproj">
+      <Project>{95c10fa9-7359-4a55-8339-f18fa94ccf02}</Project>
+      <Name>CommSubTesting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommSub\CommSub.csproj">
+      <Project>{40e2924b-b431-4753-bdfd-ec73baa94f31}</Project>
+      <Name>CommSub</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Player\Player.csproj">
       <Project>{314d22e3-0229-434d-8a96-1d8c213120da}</Project>
       <Name>Player</Name>

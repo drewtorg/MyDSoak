@@ -44,20 +44,5 @@ namespace Player
                 Player = this
             };
         }
-
-        public override void Start()
-        {
-            base.Start();
-
-            CommSubsystem.Start();
-        }
-
-        public override void Stop()
-        {
-            CommSubsystem.Stop();
-
-            base.Stop();
-
-        }
     }
 }

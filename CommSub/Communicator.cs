@@ -15,7 +15,7 @@ namespace CommSub
     {
         protected static readonly ILog Logger = LogManager.GetLogger(typeof(Communicator));
 
-        private UdpClient client;
+        protected UdpClient client;
 
         public Communicator()
         {
@@ -25,10 +25,13 @@ namespace CommSub
 
         public void Send(Envelope envelope)
         {
-            byte[] bytes = envelope.Message.Encode();
-            client.Send(bytes, bytes.Length, envelope.Ep.IPEndPoint);
+            if (envelope != null && envelope.Message != null && envelope.Ep != null)
+            {
+                byte[] bytes = envelope.Message.Encode();
+                client.Send(bytes, bytes.Length, envelope.Ep.IPEndPoint);
 
-            Logger.Debug("Sending a Message: " + Encoding.ASCII.GetString(bytes));
+                Logger.Debug("Sending a Message: " + Encoding.ASCII.GetString(bytes));
+            }
         }
 
         public Envelope Receive(int timeout)

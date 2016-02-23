@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 using Player;
-using SharedObjects;
-
-using System.Net.Sockets;
+using Player.States;
+using Player.Conversations;
 
 using NUnit.Framework;
+using System.Net.Sockets;
+using SharedObjects;
 using System.Net;
-using System.Threading;
 using Messages;
 using Messages.RequestMessages;
 using Messages.ReplyMessages;
+using CommSub;
+using CommSubTesting;
+using System.Threading;
 
 namespace PlayerTesting
 {
@@ -20,97 +25,10 @@ namespace PlayerTesting
     public class PlayerTester
     {
         [Test]
-        public void PlayerConstructor()
+        public void Player_TestEverything()
         {
-            IdentityInfo info = new IdentityInfo()
-            {
-                Alias = "TestAlias",
-                ANumber = "A000",
-                FirstName = "TestFirst",
-                LastName = "TestLast"
-            };
-            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
-
-            Assert.That(player.Game, Is.Null);
-            Assert.That(player.Identity, Is.EqualTo(info));
-            Assert.That(player.Observers, Is.EquivalentTo(new List<IObserver>()));
-            Assert.That(player.Process, Is.Null);
-            Assert.That(player.RegistryEndPoint.HostAndPort, Is.EqualTo("127.0.0.1:12000"));
-        }
-
-        [Test]
-        public void PlayerSubscribe()
-        {
-            IdentityInfo info = new IdentityInfo()
-            {
-                Alias = "TestAlias",
-                ANumber = "A000",
-                FirstName = "TestFirst",
-                LastName = "TestLast"
-            };
-            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
-
-            IObserver form = new PlayerForm();
-
-            player.Subscribe(form);
-
-            Assert.That(player.Observers[0], Is.EqualTo(form));
-            Assert.That(player.Observers.Count, Is.EqualTo(1));
-
-            player.Subscribe(form);
-            Assert.That(player.Observers[0], Is.EqualTo(form));
-            Assert.That(player.Observers.Count, Is.EqualTo(1));
-
-            player.Subscribe(null);
-            Assert.That(player.Observers[0], Is.EqualTo(form));
-            Assert.That(player.Observers.Count, Is.EqualTo(1));
-        }
-
-        [Test]
-        public void PlayerUnsubscribe()
-        {
-            IdentityInfo info = new IdentityInfo()
-            {
-                Alias = "TestAlias",
-                ANumber = "A000",
-                FirstName = "TestFirst",
-                LastName = "TestLast"
-            };
-            Player.OldPlayer player = new Player.OldPlayer("127.0.0.1:12000", info);
-
-            IObserver form = new PlayerForm();
-            IObserver form2 = new PlayerForm();
-
-            player.Unsubscribe(form);
-            Assert.That(player.Observers.Count, Is.EqualTo(0));
-
-            player.Subscribe(form);
-
-            player.Unsubscribe(null);
-            Assert.That(player.Observers[0], Is.EqualTo(form));
-            Assert.That(player.Observers.Count, Is.EqualTo(1));
-
-            player.Unsubscribe(form2);
-            Assert.That(player.Observers[0], Is.EqualTo(form));
-            Assert.That(player.Observers.Count, Is.EqualTo(1));
-
-            player.Unsubscribe(form);
-            Assert.That(player.Observers.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void PlayerLogin()
-        {
-            //make a mock registry
-            UdpClient mockClient = new UdpClient(new IPEndPoint(IPAddress.Any, 0));
-
-            int mockClientPort = ((IPEndPoint)mockClient.Client.LocalEndPoint).Port;
-            PublicEndPoint mockClientEP = new PublicEndPoint()
-            {
-                Host = "127.0.0.1",
-                Port = mockClientPort
-            };
-
+            TestCommunicator mockRegistry = new TestCommunicator();
+            
             IdentityInfo info = new IdentityInfo()
             {
                 Alias = "TestAlias",
@@ -120,146 +38,198 @@ namespace PlayerTesting
             };
 
             //make a player with the mock registry
-            TestablePlayer player = new TestablePlayer("127.0.0.1:12000", info);
-            player.RegistryEndPoint = mockClientEP;
+            Player.Player player = new Player.Player(new PlayerOptions()
+            {
+                Alias = "TestAlias",
+                ANumber = "A000",
+                FirstName = "TestFirst",
+                LastName = "TestLast",
+                EndPoint = mockRegistry.Ep.HostAndPort
+            });
+            player.CommSubsystem.Communicator = new TestCommunicator();
+            PublicEndPoint playerEp = ((TestCommunicator)player.CommSubsystem.Communicator).Ep;
 
-            //make the player login
-            player.SendLoginRequest();
+            //player will start by logging in
+            player.Start();
 
-            //have the mock registry receive the message
-            IPEndPoint senderEP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] bytes = mockClient.Receive(ref senderEP);
+            //pick up the sent login and verify it all came across okay
+            Envelope loginEnvelope = mockRegistry.Receive(2000);
+            MessageNumber expectedId = new MessageNumber() { Pid = 0, Seq = 1 };
 
-            Assert.IsNotNull(bytes);
-            Assert.AreNotEqual(0, bytes.Length);
+            Assert.That(loginEnvelope, Is.Not.Null);
+            //Assert.That(loginEnvelope.Ep, Is.EqualTo(mockRegistry.Ep));
+            Assert.That(loginEnvelope.Message, Is.TypeOf(typeof(LoginRequest)));
 
-            Message msg = Message.Decode(bytes);
+            LoginRequest loginRequest = loginEnvelope.Message as LoginRequest;
+            
+            Assert.That(loginRequest.ConvId, Is.EqualTo(expectedId));
+            Assert.That(loginRequest.MsgId, Is.EqualTo(expectedId));
+            Assert.That(loginRequest.ProcessLabel, Is.EqualTo("Drew Torgeson"));
+            Assert.That(loginRequest.ProcessType, Is.EqualTo(ProcessInfo.ProcessType.Player));
 
-            Assert.IsNotNull(msg);
-            Assert.IsTrue(msg is LoginRequest);
+            //prepare to send a login reply
+            MessageNumber replyConv = new MessageNumber() { Pid = 0, Seq = 1 };
+            MessageNumber replyMsg = new MessageNumber() { Pid = 1, Seq = 2 };
 
-            LoginRequest request = msg as LoginRequest;
-            StringAssert.AreEqualIgnoringCase(player.Identity.Alias, request.Identity.Alias);
-            StringAssert.AreEqualIgnoringCase(player.Identity.ANumber, request.Identity.ANumber);
-            StringAssert.AreEqualIgnoringCase(player.Identity.FirstName, request.Identity.FirstName);
-            StringAssert.AreEqualIgnoringCase(player.Identity.LastName, request.Identity.LastName);
-
-            LoginReply reply = new LoginReply()
+            LoginReply loginReply = new LoginReply()
             {
                 ProcessInfo = new ProcessInfo()
                 {
                     ProcessId = 4,
-                    EndPoint = mockClientEP
+                    EndPoint = playerEp
                 },
                 Success = true,
-                Note = "Test"
+                Note = "Test",
+                ConvId = replyConv,
+                MsgId = replyMsg
             };
-            bytes = reply.Encode();
 
-            //have the mock registry send a login reply
-            mockClient.Send(bytes, bytes.Length, senderEP);
-
-            //make the player receive the login reply
-            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-            bytes = player.PlayerClient.Receive(ref ep);
-
-            msg = Message.Decode(bytes);
-
-            Assert.IsNotNull(msg);
-            Assert.IsTrue(msg is LoginReply);
-
-            LoginReply reply2 = msg as LoginReply;
-            Assert.AreEqual(reply.Success, reply2.Success);
-            StringAssert.AreEqualIgnoringCase(reply.Note, reply2.Note);
-            Assert.AreEqual(reply.ProcessInfo.ProcessId, reply2.ProcessInfo.ProcessId);
-            Assert.AreEqual(reply.ProcessInfo.EndPoint, reply2.ProcessInfo.EndPoint);
-        }
-
-        [Test]
-        public void PlayerGameListRequest()
-        {
-            //make a mock registry
-            UdpClient mockClient = new UdpClient(new IPEndPoint(IPAddress.Any, 0));
-
-            int mockClientPort = ((IPEndPoint)mockClient.Client.LocalEndPoint).Port;
-            PublicEndPoint mockClientEP = new PublicEndPoint()
+            mockRegistry.Send(new Envelope()
             {
-                Host = "127.0.0.1",
-                Port = mockClientPort
-            };
+                Message = loginReply,
+                Ep = playerEp
+            });
 
-            IdentityInfo info = new IdentityInfo()
+            //the player will now send a game list request
+            Envelope gameListEnvelope = mockRegistry.Receive(2000);
+
+            expectedId = new MessageNumber() { Pid = 4, Seq = 1 };
+
+            Assert.That(gameListEnvelope, Is.Not.Null);
+            Assert.That(gameListEnvelope.Message, Is.TypeOf(typeof(GameListRequest)));
+
+            GameListRequest gameListRequest = gameListEnvelope.Message as GameListRequest;
+
+            Assert.That(gameListRequest.ConvId, Is.EqualTo(expectedId));
+            Assert.That(gameListRequest.MsgId, Is.EqualTo(expectedId));
+            Assert.That(gameListRequest.StatusFilter, Is.EqualTo((int)GameInfo.StatusCode.Available));
+
+            //prepare a game list reply
+            replyConv = new MessageNumber() { Pid = 4, Seq = 1 };
+            replyMsg = new MessageNumber() { Pid = 1, Seq = 3 };
+
+            GameInfo[] games = new GameInfo[]
             {
-                Alias = "TestAlias",
-                ANumber = "A000",
-                FirstName = "TestFirst",
-                LastName = "TestLast"
+                new GameInfo()
+                {
+                    GameId = 1,
+                    GameManager = new ProcessInfo()
+                    {
+                        EndPoint = mockRegistry.Ep,
+                        ProcessId = 5
+                    },
+                    Status = GameInfo.StatusCode.Available,
+                }
             };
 
-            //make a player with the mock registry
-            TestablePlayer player = new TestablePlayer("127.0.0.1:12000", info);
-            player.RegistryEndPoint = mockClientEP;
-
-            //make the player send a game list request
-            player.SendGameListRequest();
-
-            //have the mock registry receive the message
-            IPEndPoint senderEP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] bytes = mockClient.Receive(ref senderEP);
-
-            Assert.IsNotNull(bytes);
-            Assert.AreNotEqual(0, bytes.Length);
-
-            Message msg = Message.Decode(bytes);
-
-            Assert.IsNotNull(msg);
-            Assert.IsTrue(msg is GameListRequest);
-
-            GameListRequest request = msg as GameListRequest;
-            Assert.AreEqual((int)GameInfo.StatusCode.Available, request.StatusFilter);
-
-            GameListReply reply = new GameListReply()
+            GameListReply gameListReply = new GameListReply()
             {
                 Success = true,
                 Note = "Test",
-                GameInfo = new GameInfo[] 
+                ConvId = replyConv,
+                MsgId = replyMsg,
+                GameInfo = games
+            };
+
+            mockRegistry.Send(new Envelope()
+            {
+                Message = gameListReply,
+                Ep = playerEp
+            });
+
+            //the player will now send a join game request
+            Envelope joinGameEnvelope = mockRegistry.Receive(2000);
+
+            expectedId = new MessageNumber() { Pid = 4, Seq = 2 };
+
+            Assert.That(joinGameEnvelope, Is.Not.Null);
+            Assert.That(joinGameEnvelope.Message, Is.TypeOf(typeof(JoinGameRequest)));
+
+            JoinGameRequest joinGameRequest = joinGameEnvelope.Message as JoinGameRequest;
+
+            Assert.That(joinGameRequest.ConvId, Is.EqualTo(expectedId));
+            Assert.That(joinGameRequest.MsgId, Is.EqualTo(expectedId));
+            Assert.That(joinGameRequest.GameId, Is.EqualTo(1));
+
+            //prepare a join game reply
+            replyConv = new MessageNumber() { Pid = 4, Seq = 2 };
+            replyMsg = new MessageNumber() { Pid = 2, Seq = 4 };
+
+            JoinGameReply joinGameReply = new JoinGameReply()
+            {
+                Success = true,
+                Note = "Test",
+                ConvId = replyConv,
+                MsgId = replyMsg,
+                GameId = 1,
+                InitialLifePoints = 20
+            };
+
+            mockRegistry.Send(new Envelope()
+            {
+                Message = joinGameReply,
+                Ep = playerEp
+            });
+
+            //the player will now wait a few seconds, let's send an alive request
+            MessageNumber aliveConvId = new MessageNumber() { Pid = 1, Seq = 4 };
+            Envelope aliveRequest = new Envelope()
+            {
+                Ep = playerEp,
+                Message = new AliveRequest()
                 {
-                    new GameInfo()
-                    {
-                        GameId = 1,
-                        Status = GameInfo.StatusCode.Available,
-                        Label = "Test"
-                    }
+                    ConvId = aliveConvId,
+                    MsgId = aliveConvId
                 }
             };
-            bytes = reply.Encode();
 
-            //have the mock registry send a login reply
-            mockClient.Send(bytes, bytes.Length, senderEP);
+            mockRegistry.Send(aliveRequest);
 
-            //make the player receive the login reply
-            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-            bytes = player.PlayerClient.Receive(ref ep);
+            //now we wait for the player to respond
+            Envelope aliveEnvelope = mockRegistry.Receive(2000);
 
-            msg = Message.Decode(bytes);
+            expectedId = new MessageNumber() { Pid = 4, Seq = 3 };
 
-            Assert.IsNotNull(msg);
-            Assert.IsTrue(msg is GameListReply);
+            Assert.That(aliveEnvelope, Is.Not.Null);
+            Assert.That(aliveEnvelope.Message, Is.TypeOf(typeof(Reply)));
 
-            GameListReply reply2 = msg as GameListReply;
-            Assert.AreEqual(reply.Success, reply2.Success);
-            StringAssert.AreEqualIgnoringCase(reply.Note, reply2.Note);
-            Assert.AreEqual(reply.GameInfo.Length, reply2.GameInfo.Length);
-            Assert.AreEqual(reply.GameInfo[0].GameId, reply2.GameInfo[0].GameId);
-            Assert.AreEqual(reply.GameInfo[0].Label, reply2.GameInfo[0].Label);
-            Assert.AreEqual(reply.GameInfo[0].Status, reply2.GameInfo[0].Status);
+            Reply aliveReply = aliveEnvelope.Message as Reply;
+
+            Assert.That(aliveReply.ConvId, Is.EqualTo(aliveConvId));
+            Assert.That(aliveReply.MsgId, Is.EqualTo(expectedId));
+            Assert.That(aliveReply.Success, Is.True);
+
+
+            //the player will now send a log out request
+            Envelope logoutEnvelope = mockRegistry.Receive(12000);
+
+            expectedId = new MessageNumber() { Pid = 4, Seq = 4 };
+
+            Assert.That(logoutEnvelope, Is.Not.Null);
+            Assert.That(logoutEnvelope.Message, Is.TypeOf(typeof(LogoutRequest)));
+
+            LogoutRequest logoutRequest = logoutEnvelope.Message as LogoutRequest;
+
+            Assert.That(logoutRequest.ConvId, Is.EqualTo(expectedId));
+            Assert.That(logoutRequest.MsgId, Is.EqualTo(expectedId));
+
+
+            //prepare a log out reply
+            replyConv = new MessageNumber() { Pid = 4, Seq = 4 };
+            replyMsg = new MessageNumber() { Pid = 1, Seq = 5 };
+
+            Reply logout = new Reply()
+            {
+                Success = true,
+                ConvId = replyConv,
+                MsgId = replyMsg
+            };
+
+            mockRegistry.Send(new Envelope()
+            {
+                Message = joinGameReply,
+                Ep = playerEp
+            });
         }
-    }
-
-    public class TestablePlayer : Player.OldPlayer
-    {
-        public TestablePlayer(string endpoint, IdentityInfo info) : base(endpoint, info) { }
-
-        public UdpClient PlayerClient { get { return client; } }
     }
 }

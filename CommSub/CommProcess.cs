@@ -10,7 +10,7 @@ using SharedObjects;
 
 namespace CommSub
 {
-    public class CommProcess : BackgroundThread
+    public abstract class CommProcess : BackgroundThread
     {
         public CommProcessState State { get; set; }
         public RuntimeOptions Options { get; set; }
@@ -22,6 +22,21 @@ namespace CommSub
             {
                 State.Do();
             }
+        }
+
+        public override void Start()
+        {
+            base.Start();
+
+            CommSubsystem.Start();
+        }
+
+        public override void Stop()
+        {
+            CommSubsystem.Stop();
+
+            base.Stop();
+
         }
     }
 }
