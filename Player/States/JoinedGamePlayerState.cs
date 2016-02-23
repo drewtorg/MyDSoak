@@ -18,7 +18,7 @@ namespace Player.States
 
         public override void Do()
         {
-            Thread.Sleep(10000);
+            Thread.Sleep(15000);
 
             LogoutConversation logoutConv = Player.CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LogoutConversation)) as LogoutConversation;
             logoutConv.PlayerState = this;

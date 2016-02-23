@@ -14,6 +14,13 @@ namespace Player.States
     {
         public override void Do()
         {
+            Process = new ProcessInfo()
+            {
+                Status = ProcessInfo.StatusCode.Initializing,
+                Type = ProcessInfo.ProcessType.Player,
+                Label = "Drew Torgeson",
+            };
+
             LoginConversation loginConv = Player.CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LoginConversation)) as LoginConversation;
             loginConv.PlayerState = this;
             loginConv.Start();

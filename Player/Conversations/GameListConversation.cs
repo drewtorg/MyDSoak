@@ -48,7 +48,7 @@ namespace Player.Conversations
             PlayerState.Process.Status = ProcessInfo.StatusCode.JoiningGame;
             PlayerState.PotentialGames = reply.GameInfo.ToList();
 
-            return true;
+            return PlayerState.PotentialGames.Count > 0;
         }
 
         protected override bool ValidateProcessState()

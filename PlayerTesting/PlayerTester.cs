@@ -201,7 +201,7 @@ namespace PlayerTesting
 
 
             //the player will now send a log out request
-            Envelope logoutEnvelope = mockRegistry.Receive(12000);
+            Envelope logoutEnvelope = mockRegistry.Receive(17000);
 
             expectedId = new MessageNumber() { Pid = 4, Seq = 4 };
 

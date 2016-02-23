@@ -32,8 +32,8 @@ namespace Player.Conversations
                 ConvId = new MessageNumber() { Pid = 0, Seq = 1 },
                 MsgId = new MessageNumber() { Pid = 0, Seq = 1 },
                 Identity = PlayerState.Identity,
-                ProcessLabel = "Drew Torgeson",
-                ProcessType = ProcessInfo.ProcessType.Player
+                ProcessLabel = PlayerState.Process.Label,
+                ProcessType = PlayerState.Process.Type
             };
         }
 
@@ -46,9 +46,12 @@ namespace Player.Conversations
         {
             LoginReply reply = envelope.Message as LoginReply;
 
-            PlayerState.Process = reply.ProcessInfo;
-            MessageNumber.LocalProcessId = reply.ProcessInfo.ProcessId;
-            return true;
+            if (reply.Success)
+            {
+                PlayerState.Process = reply.ProcessInfo;
+                MessageNumber.LocalProcessId = reply.ProcessInfo.ProcessId;
+            }
+            return reply.Success;
         }
 
         protected override bool ValidateProcessState()
