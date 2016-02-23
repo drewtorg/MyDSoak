@@ -227,7 +227,7 @@ namespace PlayerTesting
 
             mockRegistry.Send(new Envelope()
             {
-                Message = joinGameReply,
+                Message = logout,
                 Ep = playerEp
             });
         }

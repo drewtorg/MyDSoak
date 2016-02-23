@@ -20,6 +20,8 @@ namespace Player.States
         {
             Thread.Sleep(15000);
 
+            Player.PlayerState.Process.Status = ProcessInfo.StatusCode.Terminating;
+
             LogoutConversation logoutConv = Player.CommSubsystem.ConversationFactory.CreateFromConversationType(typeof(LogoutConversation)) as LogoutConversation;
             logoutConv.PlayerState = this;
             logoutConv.Start();

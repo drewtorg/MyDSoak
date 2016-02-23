@@ -29,15 +29,13 @@ namespace Player
 
             if (Parser.Default.ParseArguments(args, options))
             {
-                // Application.EnableVisualStyles();
-                // Application.SetCompatibleTextRenderingDefault(false);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
                 Player player = new Player(options);
-                player.Start();
-                // PlayerForm form = new PlayerForm();
-                // player.Subscribe(form);
-                // Application.Run(form);
-                while (player.Status == "Running") Thread.Sleep(0);
+                PlayerForm form = new PlayerForm();
+                form.Player = player;
+                Application.Run(form);
             }
         }
     }

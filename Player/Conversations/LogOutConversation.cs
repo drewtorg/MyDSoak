@@ -40,7 +40,9 @@ namespace Player.Conversations
         protected override bool ProcessReply(Envelope envelope)
         {
             Reply reply = envelope.Message as Reply;
-
+            PlayerState.Game = null;
+            PlayerState.PotentialGames.Clear();
+            
             Logger.Debug("Successful Logout");
             return reply.Success;
         }

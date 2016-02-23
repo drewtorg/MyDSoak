@@ -10,15 +10,21 @@ using System.Windows.Forms;
 
 namespace Player
 {
-    public partial class PlayerForm : Form, IObserver
+    public partial class PlayerForm : Form
     {
-        public OldPlayer Player { get; set; }
+        public Player Player { get; set; }
+        public Timer timer;
         private bool started { get; set; }
 
         public PlayerForm()
         {
             InitializeComponent();
-            
+
+            timer = new Timer();
+
+            timer.Interval = 200;
+            timer.Tick += Timer_Tick;
+
             ProcessLabel.Text =  "";
             EndpointLabel.Text = "";
             StatusLabel.Text = "Initializing";
@@ -31,48 +37,33 @@ namespace Player
             NumUSLabel.Text = "";
         }
 
-        private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if(Player != null)
-                Player.SendLogoutRequest();
-        }
-
-        public void Update(ISubject subject)
-        {
-            if(subject is OldPlayer)
-            {
-                OldPlayer player = subject as OldPlayer;
-                Player = player;
-
-                UpdateDisplay();
-            }
-        }
-        public void Remove(ISubject subject)
-        {
-            if(subject is OldPlayer && ((OldPlayer)subject).Equals(Player))
-                Player = null;
-        }
-
-        private void UpdateDisplay()
+        private void Timer_Tick(object sender, EventArgs e)
         {
             if(Player != null)
             {
-                ThreadHelper.SetText(this, ProcessLabel, Player.Process.Label);
-                ThreadHelper.SetText(this, EndpointLabel, Player.Process.EndPoint.HostAndPort);
-                ThreadHelper.SetText(this, StatusLabel, Player.Process.StatusString);
+                ProcessLabel.Text = Player.PlayerState.Process.Label;
+                EndpointLabel.Text = Player.PlayerState.Process.EndPoint.HostAndPort;
+                StatusLabel.Text = Player.PlayerState.Process.StatusString;
 
-                if(Player.Game != null)
+                ProcessListView.Items.Clear();
+
+                if (Player.PlayerState.Game != null)
                 {
-                    ThreadHelper.SetText(this, GameIdLabel, Player.Game.GameId.ToString());
-                    ThreadHelper.SetText(this, GameStatusLabel, Player.Game.Status.ToString());
-                    ThreadHelper.ClearListView(this, ProcessListView);
-                    ThreadHelper.AddListViewItem(this, ProcessListView, new ListViewItem(new string[]
+                    GameIdLabel.Text = Player.PlayerState.Game.GameId.ToString();
+                    GameStatusLabel.Text = Player.PlayerState.Game.Status.ToString();
+                    ProcessListView.Items.Add(new ListViewItem(new string[]
                     {
                         "Life Points",
-                        Player.Process.LifePoints.ToString()
+                        Player.PlayerState.Process.LifePoints.ToString()
                     }));
                 }
             }
+        }
+
+        private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            timer.Stop();
+            Player.Stop();
 
         }
 
@@ -85,6 +76,7 @@ namespace Player
                     Player.Start();
                     started = true;
                     StartButton.Enabled = false;
+                    timer.Start();
                 }
             }
         }
