@@ -8,6 +8,8 @@ using CommandLine;
 
 using SharedObjects;
 
+using CommSub;
+
 using log4net;
 using log4net.Config;
 using System.Windows.Forms;
@@ -25,16 +27,15 @@ namespace Player
             XmlConfigurator.Configure();
             Logger.Info("Starting up");
 
-            PlayerOptions options = new PlayerOptions();
+            RuntimeOptions options = new PlayerOptions();
 
             if (Parser.Default.ParseArguments(args, options))
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                Player player = new Player(options);
-                PlayerForm form = new PlayerForm();
-                form.Player = player;
+                Player player = new Player() { Options = options };
+                PlayerForm form = new PlayerForm() { Player = player };
                 Application.Run(form);
             }
         }

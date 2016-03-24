@@ -22,27 +22,20 @@ namespace Player
     {
         protected static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
 
-        public PlayerState PlayerState { get { return State as PlayerState; } }
-
-        public Player(PlayerOptions options)
+        public Player()
         {
             Label = "Player";
-            Options = options;
-            CommSubsystem = new CommSubsystem(new PlayerConversationFactory() { DefaultMaxRetries = 3, DefaultTimeOut = 3000 });
-            CommSubsystem.Initialize();
-
-            State = new InitializingPlayerState()
+            SetupCommSubsystem(new PlayerConversationFactory()
             {
-                Identity = new IdentityInfo()
-                {
-                    Alias = options.Alias,
-                    ANumber = options.ANumber,
-                    FirstName = options.FirstName,
-                    LastName = options.LastName
-                },
-                RegistryEndPoint = new PublicEndPoint(options.EndPoint),
-                Player = this
-            };
+                DefaultMaxRetries = Options.Retries,
+                DefaultTimeout = Options.Timeout,
+                Process = this
+            });
+        }
+
+        protected override void Process(object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -74,6 +74,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\CommSub\CommSub.csproj">
+      <Project>{cb0cc6e8-9228-429f-ad9e-04aaa4a1f5e6}</Project>
+      <Name>CommSub</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Messages\Messages.csproj">
       <Project>{9659277f-710a-4e0b-ac2b-12882aac247d}</Project>
       <Name>Messages</Name>
@@ -89,10 +93,6 @@
     <ProjectReference Include="..\CommSubTesting\CommSubTesting.csproj">
       <Project>{95c10fa9-7359-4a55-8339-f18fa94ccf02}</Project>
       <Name>CommSubTesting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommSub\CommSub.csproj">
-      <Project>{40e2924b-b431-4753-bdfd-ec73baa94f31}</Project>
-      <Name>CommSub</Name>
     </ProjectReference>
     <ProjectReference Include="..\Player\Player.csproj">
       <Project>{314d22e3-0229-434d-8a96-1d8c213120da}</Project>

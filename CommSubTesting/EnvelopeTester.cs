@@ -17,15 +17,15 @@ namespace CommSubTesting
     {
         // tests for:
         //  simple construction, just to make sure nothing weird happens
-        [Test]
-        public void Envelope_Constructor()
-        {
-            PublicEndPoint ep = new PublicEndPoint("127.0.0.1:1000");
-            Message message = new Message();
-            Envelope e = new Envelope() { Ep = ep, Message = message };
+        //[Test]
+        //public void Envelope_Constructor()
+        //{
+        //    PublicEndPoint ep = new PublicEndPoint("127.0.0.1:1000");
+        //    Message message = new Message();
+        //    Envelope e = new Envelope() { Ep = ep, Message = message };
 
-            Assert.That(e.Message, Is.EqualTo(message));
-            Assert.That(e.Ep, Is.EqualTo(ep));
-        }
+        //    Assert.That(e.Message, Is.EqualTo(message));
+        //    Assert.That(e.Ep, Is.EqualTo(ep));
+        //}
     }
 }

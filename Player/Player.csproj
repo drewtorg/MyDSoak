@@ -70,6 +70,16 @@
       <DependentUpon>PlayerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerOptions.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="States\InitializingPlayerState.cs" />
     <Compile Include="States\JoinedGamePlayerState.cs" />
     <Compile Include="States\JoiningGamePlayerState.cs" />
@@ -81,8 +91,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\cs5200s16-shared\DSoak\CommSub\CommSub.csproj">
+      <Project>{cb0cc6e8-9228-429f-ad9e-04aaa4a1f5e6}</Project>
+      <Name>CommSub</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\cs5200s16-shared\DSoak\Messages\Messages.csproj">
       <Project>{9659277f-710a-4e0b-ac2b-12882aac247d}</Project>
       <Name>Messages</Name>
@@ -95,14 +113,14 @@
       <Project>{3239fcca-21eb-4b04-b8ad-c442491e463e}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CommSub\CommSub.csproj">
-      <Project>{40e2924b-b431-4753-bdfd-ec73baa94f31}</Project>
-      <Name>CommSub</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlayerForm.resx">
       <DependentUpon>PlayerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

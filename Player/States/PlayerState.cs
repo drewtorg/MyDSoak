@@ -10,7 +10,7 @@ using Utils;
 
 namespace Player.States
 {
-    public abstract class PlayerState : CommProcessState
+    public abstract class PlayerState //: CommProcessState
     {
         public Player Player { get; set; }
         public PublicEndPoint RegistryEndPoint { get; set; }
@@ -26,7 +26,7 @@ namespace Player.States
             Game = other.Game;
             Player = other.Player;
             PotentialGames = other.PotentialGames;
-            Process = other.Process;
+            //Process = other.Process;
             RegistryEndPoint = other.RegistryEndPoint;
 
         }

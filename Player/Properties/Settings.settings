@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Player.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="RegistryEndPoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1:12000</Value>
+    </Setting>
+    <Setting Name="ANumber" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A00003456</Value>
+    </Setting>
+    <Setting Name="FirstName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">James</Value>
+    </Setting>
+    <Setting Name="LastName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Tester</Value>
+    </Setting>
+    <Setting Name="Alias" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Drew</Value>
+    </Setting>
+    <Setting Name="MinPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15000</Value>
+    </Setting>
+    <Setting Name="MaxPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15050</Value>
+    </Setting>
+    <Setting Name="Timeout" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="MaxRetries" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CommSub.Conversations;
+using CommSub;
 
 using Messages.RequestMessages;
 using Messages.ReplyMessages;
@@ -14,13 +14,13 @@ namespace Player.Conversations
 {
     public class PlayerConversationFactory : ConversationFactory
     {
-        protected override void InitTypeMappings()
+        public override void Initialize()
         {
-            AddTypeMapping(typeof(AliveRequest), typeof(AliveConversation));
-            AddTypeMapping(typeof(JoinGameRequest), typeof(JoinGameConversation));
-            AddTypeMapping(typeof(GameListRequest), typeof(GameListConversation));
-            AddTypeMapping(typeof(LoginRequest), typeof(LoginConversation));
-            AddTypeMapping(typeof(LogoutRequest), typeof(LogoutConversation));
+            Add(typeof(AliveRequest), typeof(AliveConversation));
+            Add(typeof(JoinGameRequest), typeof(JoinGameConversation));
+            Add(typeof(GameListRequest), typeof(GameListConversation));
+            Add(typeof(LoginRequest), typeof(LoginConversation));
+            Add(typeof(LogoutRequest), typeof(LogoutConversation));
         }
     }
 }

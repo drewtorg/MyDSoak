@@ -4,28 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CommSub;
+using Player.Properties;
 
-using CommandLine;
-using CommandLine.Text;
+using CommSub;
 
 namespace Player
 {
     public class PlayerOptions : RuntimeOptions
     {
-        [Option('p', Required = true, HelpText = "The Registry's communication endpoint")]
-        public string EndPoint { get; set; }
-
-        [Option('f', Required = true, HelpText = "The Player's first name")]
-        public string FirstName { get; set; }
-
-        [Option('l', Required = true, HelpText = "The Player's last name")]
-        public string LastName { get; set; }
-
-        [Option('n', Required = true, HelpText = "The Player's A-number")]
-        public string ANumber { get; set; }
-
-        [Option('a', Required = true, HelpText = "The Player's alias")]
-        public string Alias { get; set; }
+        public override void SetDefaults()
+        {
+            if (string.IsNullOrWhiteSpace(Registry))
+                Registry = Properties.Settings.Default.RegistryEndPoint;
+            if (string.IsNullOrWhiteSpace(ANumber))
+                ANumber = Properties.Settings.Default.ANumber;
+            if (string.IsNullOrWhiteSpace(FirstName))
+                FirstName = Properties.Settings.Default.FirstName;
+            if (string.IsNullOrWhiteSpace(LastName))
+                LastName = Properties.Settings.Default.LastName;
+            if (string.IsNullOrWhiteSpace(Alias))
+                Alias = Properties.Settings.Default.Alias;
+            if (MinPortNullable == null)
+                MinPortNullable = Properties.Settings.Default.MinPort;
+            if (MaxPortNullable == null)
+                MaxPortNullable = Properties.Settings.Default.MaxPort;
+            if (TimeoutNullable == null)
+                TimeoutNullable = Properties.Settings.Default.Timeout;
+            if (RetriesNullable == null)
+                RetriesNullable = Properties.Settings.Default.MaxRetries;
+            if (string.IsNullOrWhiteSpace(Label))
+                Label = string.Format("{0}'s Player", Alias);
+        }
     }
 }

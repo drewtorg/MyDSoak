@@ -39,25 +39,25 @@ namespace Player
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if(Player != null)
-            {
-                ProcessLabel.Text = Player.PlayerState.Process.Label;
-                EndpointLabel.Text = Player.PlayerState.Process.EndPoint.HostAndPort;
-                StatusLabel.Text = Player.PlayerState.Process.StatusString;
+            //if(Player != null)
+            //{
+            //    ProcessLabel.Text = Player.PlayerState.Process.Label;
+            //    EndpointLabel.Text = Player.PlayerState.Process.EndPoint.HostAndPort;
+            //    StatusLabel.Text = Player.PlayerState.Process.StatusString;
 
-                ProcessListView.Items.Clear();
+            //    ProcessListView.Items.Clear();
 
-                if (Player.PlayerState.Game != null)
-                {
-                    GameIdLabel.Text = Player.PlayerState.Game.GameId.ToString();
-                    GameStatusLabel.Text = Player.PlayerState.Game.Status.ToString();
-                    ProcessListView.Items.Add(new ListViewItem(new string[]
-                    {
-                        "Life Points",
-                        Player.PlayerState.Process.LifePoints.ToString()
-                    }));
-                }
-            }
+            //    if (Player.PlayerState.Game != null)
+            //    {
+            //        GameIdLabel.Text = Player.PlayerState.Game.GameId.ToString();
+            //        GameStatusLabel.Text = Player.PlayerState.Game.Status.ToString();
+            //        ProcessListView.Items.Add(new ListViewItem(new string[]
+            //        {
+            //            "Life Points",
+            //            Player.PlayerState.Process.LifePoints.ToString()
+            //        }));
+            //    }
+            //}
         }
 
         private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)

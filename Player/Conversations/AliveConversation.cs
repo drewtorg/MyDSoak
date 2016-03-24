@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommSub;
-using CommSub.Conversations;
+using CommSub.Conversations.ResponderConversations;
 
 using Messages.ReplyMessages;
 using Messages.RequestMessages;
@@ -15,37 +15,25 @@ using SharedObjects;
 
 namespace Player.Conversations
 {
-    public class AliveConversation : ResponderRRConversation
+    public class AliveConversation : RequestReply
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AliveConversation));
 
-        protected override void Initialize()
+        protected override Type[] AllowedTypes
         {
-            Label = "AliveConversation";
+            get
+            {
+                return new Type[] { typeof(AliveRequest) };
+            }
         }
-
-        protected override void ProcessFailure()
-        {
-            Logger.Warn("Alive Reply failed");
-        }
-
-        protected override void ProcessRequest()
-        {
-            // AliveRequest doesn't require any processing
-        }
-
-        protected override Reply CreateReply()
+        
+        protected override Message CreateReply()
         {
             return new Reply()
             {
-                Success = true
+                Success = true,
+                Note = "I'm alive!"
             };
-        }
-
-        protected override bool ValidateProcessState()
-        {
-            // The player is always in a valid state to be alive
-            return true;
         }
     }
 }
