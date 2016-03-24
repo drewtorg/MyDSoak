@@ -22,6 +22,10 @@ namespace Player
     {
         protected static readonly ILog Logger = LogManager.GetLogger(typeof(Player));
 
+        public GameInfo Game { get; set; }
+        public IdentityInfo Identity { get; set; }
+        public List<GameInfo> PotentialGames { get; set; }
+
         public Player()
         {
             Label = "Player";

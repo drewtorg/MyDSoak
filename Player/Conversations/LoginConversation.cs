@@ -16,60 +16,48 @@ namespace Player.Conversations
 {
     public class LoginConversation : RequestReply//: InitiatorRRConversation
     {
-        //private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginConversation));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginConversation));
 
         //public PlayerState PlayerState { get; set; }
-
-        //protected override void Initialize()
-        //{
-        //    Label = "LoginConversation";
-        //    SendTo = PlayerState.RegistryEndPoint;
-        //}
-
-        //protected override Request CreateRequest()
-        //{
-        //    return new LoginRequest()
-        //    {
-        //        ConvId = new MessageNumber() { Pid = 0, Seq = 1 },
-        //        MsgId = new MessageNumber() { Pid = 0, Seq = 1 },
-        //        Identity = PlayerState.Identity,
-        //        ProcessLabel = PlayerState.Process.Label,
-        //        ProcessType = PlayerState.Process.Type
-        //    };
-        //}
-
-        //protected override void ProcessFailure()
-        //{
-        //    Logger.Warn("Registry did not respond to Login");
-        //}
-
-        //protected override bool ProcessReply(Envelope envelope)
-        //{
-        //    LoginReply reply = envelope.Message as LoginReply;
-
-        //    if (reply.Success)
-        //    {
-        //        PlayerState.Process = reply.ProcessInfo;
-        //        MessageNumber.LocalProcessId = reply.ProcessInfo.ProcessId;
-        //    }
-        //    return reply.Success;
-        //}
-
-        //protected override bool ValidateProcessState()
-        //{
-        //    return PlayerState is InitializingPlayerState;
-        //}
+        
         protected override Type[] AllowedReplyTypes
         {
             get
             {
-                throw new NotImplementedException();
+                return new Type[] { typeof(LoginReply) };
             }
         }
 
         protected override Message CreateRequest()
         {
-            throw new NotImplementedException();
+            TargetEndPoint = Process.RegistryEndPoint;
+            return new LoginRequest()
+            {
+                Identity = ((Player)Process).Identity,
+                ProcessLabel = Process.Label,
+                ProcessType = ProcessInfo.ProcessType.Player
+            };
+        }
+
+        protected override bool IsProcessStateValid()
+        {
+            return Process.MyProcessInfo.Status == ProcessInfo.StatusCode.Initializing;
+        }
+
+        protected override bool IsConversationStateValid()
+        {
+            return ((Player)Process).Identity != null;
+        }
+
+        protected override void ProcessReply(Reply reply)
+        {
+            LoginReply login = reply as LoginReply;
+
+            if (login.Success)
+            {
+                Process.MyProcessInfo = login.ProcessInfo;
+                MessageNumber.LocalProcessId = login.ProcessInfo.ProcessId;
+            }
         }
     }
 }
