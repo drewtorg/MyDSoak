@@ -14,60 +14,38 @@ using Messages;
 
 namespace Player.Conversations
 {
-    public class GameListConversation : RequestReply//: InitiatorRRConversation
+    public class GameListConversation : RequestReply
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(GameListConversation));
-
         protected override Type[] AllowedReplyTypes
         {
             get
             {
-                throw new NotImplementedException();
+                return new Type[] { typeof(GameListReply) };
             }
         }
 
         protected override Message CreateRequest()
         {
-            throw new NotImplementedException();
+            TargetEndPoint = Process.RegistryEndPoint;
+            return new GameListRequest()
+            {
+                StatusFilter = (int)GameInfo.StatusCode.Available
+            };
         }
 
-        //public PlayerState PlayerState { get; set; }
+        protected override bool IsProcessStateValid()
+        {
+            return Process.MyProcessInfo.Status == ProcessInfo.StatusCode.Registered;
+        }
 
-        //protected override void Initialize()
-        //{
-        //    Label = "GameListConversation";
-        //    SendTo = PlayerState.RegistryEndPoint;
-        //}
-
-        //protected override Request CreateRequest()
-        //{
-        //    GameListRequest request = new GameListRequest()
-        //    {
-        //        StatusFilter = (int)GameInfo.StatusCode.Available
-        //    };
-        //    request.InitMessageAndConversationNumbers();
-        //    return request;
-        //}
-
-        //protected override void ProcessFailure()
-        //{
-        //    Logger.Warn("GameListConversation Failed");
-        //}
-
-        //protected override bool ProcessReply(Envelope envelope)
-        //{
-        //    GameListReply reply = envelope.Message as GameListReply;
-
-
-        //    PlayerState.Process.Status = ProcessInfo.StatusCode.JoiningGame;
-        //    PlayerState.PotentialGames = reply.GameInfo.ToList();
-
-        //    return PlayerState.PotentialGames.Count > 0;
-        //}
-
-        //protected override bool ValidateProcessState()
-        //{
-        //    return PlayerState is RegisteredPlayerState;
-        //}
+        protected override void ProcessReply(Reply reply)
+        {
+            if(reply.Success)
+            {
+                GameListReply listReply = reply as GameListReply;
+                ((Player)Process).PotentialGames = listReply.GameInfo.ToList();
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.JoiningGame;
+            }
+        }
     }
 }

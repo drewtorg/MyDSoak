@@ -21,16 +21,8 @@ namespace Player.Conversations
             Add(typeof(GameListRequest), typeof(GameListConversation));
             Add(typeof(LoginRequest), typeof(LoginConversation));
             Add(typeof(LogoutRequest), typeof(LogoutConversation));
+            Add(typeof(ShutdownRequest), typeof(ShutdownConversation));
+            Add(typeof(ReadyToStart), typeof(ReadyToStartConversation));
         }
-
-        //public override T CreateFromConversationType<T>(Envelope envelope = null)
-        //{
-        //    return base.CreateFromConversationType<T>(envelope);
-        //}
-
-        //public override Conversation CreateFromMessageType(Type messageType, Envelope envelope)
-        //{
-        //    return base.CreateFromMessageType(messageType, envelope);
-        //}
     }
 }

@@ -14,7 +14,7 @@ using Messages;
 
 namespace Player.Conversations
 {
-    public class JoinGameConversation : RequestReply//: InitiatorRRConversation
+    public class JoinGameConversation : RequestReply
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(JoinGameConversation));
 
@@ -22,64 +22,51 @@ namespace Player.Conversations
         {
             get
             {
-                throw new NotImplementedException();
+                return new Type[] { typeof(JoinGameReply) };
             }
         }
 
         protected override Message CreateRequest()
         {
-            throw new NotImplementedException();
+            return new JoinGameRequest()
+            {
+                Player = Process.MyProcessInfo,
+                GameId = ((Player)Process).PotentialGames[0].GameId
+            };
         }
 
-        //public PlayerState PlayerState { get; set; }
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid() &&
+                ((Player)Process).PotentialGames.Count > 0;
+        }
 
-        //protected override void Initialize()
-        //{
-        //    Label = "JoinGameConversation";
-        //    SendTo = PlayerState.PotentialGames[0].GameManager.EndPoint;
-        //}
+        protected override bool IsProcessStateValid()
+        {
+            return Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame;
+        }
 
-        //protected override Request CreateRequest()
-        //{
-        //    GameInfo game = PlayerState.PotentialGames[0];
+        protected override void ProcessReply(Reply reply)
+        {
+            if (reply.Success)
+            {
+                JoinGameReply joinReply = reply as JoinGameReply;
 
-        //    JoinGameRequest request = new JoinGameRequest()
-        //    {
-        //        GameId = game.GameId,
-        //        Player = PlayerState.Process
-        //    };
-        //    request.InitMessageAndConversationNumbers();
-        //    return request;
-        //}
-
-        //protected override void ProcessFailure()
-        //{
-        //    Logger.Warn("JoinGameConversation Failed");
-
-        //    PlayerState.PotentialGames.RemoveAt(0);
-        //}
-
-        //protected override bool ProcessReply(Envelope envelope)
-        //{
-        //    JoinGameReply reply = envelope.Message as JoinGameReply;
-
-        //    if (reply.Success)
-        //    {
-        //        PlayerState.Process.Status = ProcessInfo.StatusCode.JoinedGame;
-        //        PlayerState.Game = PlayerState.PotentialGames[0];
-        //        PlayerState.Process.LifePoints = (short)reply.InitialLifePoints;
-        //    }
-        //    else
-        //    {
-        //        PlayerState.PotentialGames.RemoveAt(0);
-        //    }
-
-        //    return reply.Success;
-        //}
-
-        //protected override bool ValidateProcessState()
-        //{
-        //    return PlayerState is JoiningGamePlayerState;
-        //}
+                ((Player)Process).GameData = new GameProcessData()
+                {
+                    HasUmbrellaRaised = false,
+                    HitPoints = joinReply.InitialLifePoints,
+                    LifePoints = joinReply.InitialLifePoints,
+                    Type = ProcessInfo.ProcessType.Player,
+                    ProcessId = joinReply.MsgId.Pid
+                };
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.JoinedGame;
+                ((Player)Process).PotentialGames.Clear();
+            }
+            else
+            {
+                ((Player)Process).PotentialGames.RemoveAt(0);
+            }
+        }
     }
 }

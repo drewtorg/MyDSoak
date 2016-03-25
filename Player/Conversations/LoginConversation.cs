@@ -14,12 +14,8 @@ using Messages;
 
 namespace Player.Conversations
 {
-    public class LoginConversation : RequestReply//: InitiatorRRConversation
+    public class LoginConversation : RequestReply
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginConversation));
-
-        //public PlayerState PlayerState { get; set; }
-        
         protected override Type[] AllowedReplyTypes
         {
             get
@@ -30,7 +26,6 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            TargetEndPoint = Process.RegistryEndPoint;
             return new LoginRequest()
             {
                 Identity = ((Player)Process).Identity,
@@ -46,17 +41,21 @@ namespace Player.Conversations
 
         protected override bool IsConversationStateValid()
         {
-            return ((Player)Process).Identity != null;
+            return base.IsConversationStateValid() &&
+                ((Player)Process).Identity != null;
         }
 
         protected override void ProcessReply(Reply reply)
         {
-            LoginReply login = reply as LoginReply;
+            LoginReply loginReply = reply as LoginReply;
 
-            if (login.Success)
+            if (loginReply.Success)
             {
-                Process.MyProcessInfo = login.ProcessInfo;
-                MessageNumber.LocalProcessId = login.ProcessInfo.ProcessId;
+                Process.ProxyEndPoint = loginReply.ProxyEndPoint;
+                ((Player)Process).PennyBankEndPoint = loginReply.PennyBankEndPoint;
+                ((Player)Process).PennyBankPublicKey = loginReply.PennyBankPublicKey;
+                Process.MyProcessInfo = loginReply.ProcessInfo;
+                MessageNumber.LocalProcessId = loginReply.ProcessInfo.ProcessId;
             }
         }
     }

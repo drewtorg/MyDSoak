@@ -14,7 +14,7 @@ using Messages;
 
 namespace Player.Conversations
 {
-    public class LogoutConversation : RequestReply//: InitiatorRRConversation
+    public class LogoutConversation : RequestReply
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(LogoutConversation));
 
@@ -22,49 +22,30 @@ namespace Player.Conversations
         {
             get
             {
-                throw new NotImplementedException();
+                return new Type[] { typeof(Reply) };
             }
         }
 
         protected override Message CreateRequest()
         {
-            throw new NotImplementedException();
+            return new LoginRequest()
+            {
+                ProcessLabel = Process.Label,
+                ProcessType = ProcessInfo.ProcessType.Player,
+                Identity = ((Player)Process).Identity
+            };
         }
 
-        //public PlayerState PlayerState { get; set; }
+        protected override bool IsProcessStateValid()
+        {
+            return Process.MyProcessInfo.Status != ProcessInfo.StatusCode.Initializing &&
+                   Process.MyProcessInfo.Status != ProcessInfo.StatusCode.NotInitialized;
+        }
 
-        //protected override void Initialize()
-        //{
-        //    Label = "Logout Conversation";
-        //    SendTo = PlayerState.RegistryEndPoint; 
-        //}
-
-        //protected override Request CreateRequest()
-        //{
-        //    LogoutRequest request = new LogoutRequest();
-        //    request.InitMessageAndConversationNumbers();
-        //    return request;
-        //}
-
-        //protected override void ProcessFailure()
-        //{
-        //    Logger.Warn("LogoutConversation Failed");
-        //}
-
-        //protected override bool ProcessReply(Envelope envelope)
-        //{
-        //    Reply reply = envelope.Message as Reply;
-        //    PlayerState.Game = null;
-        //    PlayerState.PotentialGames.Clear();
-
-        //    Logger.Debug("Successful Logout");
-        //    return reply.Success;
-        //}
-
-        //protected override bool ValidateProcessState()
-        //{
-        //    //a plyaer can log out in any state except the initializing state because it hasn't even logged in yet
-        //    return !(PlayerState is InitializingPlayerState);
-        //}
+        protected override void ProcessReply(Reply reply)
+        {
+            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.Terminating;
+            Process.BeginShutdown();
+        }
     }
 }

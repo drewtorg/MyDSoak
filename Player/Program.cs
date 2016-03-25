@@ -25,18 +25,27 @@ namespace Player
         static void Main(string[] args)
         {
             XmlConfigurator.Configure();
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             Logger.Info("Starting up");
 
             RuntimeOptions options = new PlayerOptions();
 
             if (Parser.Default.ParseArguments(args, options))
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
+                options.SetDefaults();
 
                 Player player = new Player() { Options = options };
-                PlayerForm form = new PlayerForm() { Player = player };
-                Application.Run(form);
+                player.Start();
+
+                while (player.Status == "Running")
+                {
+                    Thread.Sleep(1000);
+                }
+                //PlayerForm form = new PlayerForm() { Player = player };
+                //Application.Run(form);
             }
         }
     }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{314D22E3-0229-434D-8A96-1D8C213120DA}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Player</RootNamespace>
     <AssemblyName>Player</AssemblyName>
@@ -58,10 +58,14 @@
   <ItemGroup>
     <Compile Include="Conversations\AliveConversation.cs" />
     <Compile Include="Conversations\GameListConversation.cs" />
+    <Compile Include="Conversations\ReadyToStartConversation.cs" />
+    <Compile Include="Conversations\GameStatusConversation.cs" />
     <Compile Include="Conversations\JoinGameConversation.cs" />
     <Compile Include="Conversations\LoginConversation.cs" />
     <Compile Include="Conversations\LogoutConversation.cs" />
     <Compile Include="Conversations\PlayerConversationFactory.cs" />
+    <Compile Include="Conversations\ShutdownConversation.cs" />
+    <Compile Include="Conversations\StartGameConversation.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerForm.cs">
       <SubType>Form</SubType>
