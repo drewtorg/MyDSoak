@@ -30,7 +30,7 @@ namespace Player.Conversations
         {
             return new JoinGameRequest()
             {
-                Player = Process.MyProcessInfo,
+                Process = Process.MyProcessInfo,
                 GameId = ((Player)Process).PotentialGames[0].GameId
             };
         }
