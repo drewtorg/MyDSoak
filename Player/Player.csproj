@@ -57,7 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conversations\AliveConversation.cs" />
+    <Compile Include="Conversations\AllowanceDistributionConversation.cs" />
+    <Compile Include="Conversations\BuyBalloonConversation.cs" />
+    <Compile Include="Conversations\FillBalloonConversation.cs" />
     <Compile Include="Conversations\GameListConversation.cs" />
+    <Compile Include="Conversations\HitByBalloonConversation.cs" />
+    <Compile Include="Conversations\LeaveGameConversation.cs" />
+    <Compile Include="Conversations\PennyValidationConversation.cs" />
     <Compile Include="Conversations\ReadyToStartConversation.cs" />
     <Compile Include="Conversations\GameStatusConversation.cs" />
     <Compile Include="Conversations\JoinGameConversation.cs" />
@@ -66,6 +72,7 @@
     <Compile Include="Conversations\PlayerConversationFactory.cs" />
     <Compile Include="Conversations\ShutdownConversation.cs" />
     <Compile Include="Conversations\StartGameConversation.cs" />
+    <Compile Include="Conversations\ThrowBalloonConversation.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerForm.cs">
       <SubType>Form</SubType>

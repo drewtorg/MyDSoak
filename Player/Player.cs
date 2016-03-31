@@ -26,12 +26,12 @@ namespace Player
         public IdentityInfo Identity { get; set; }
         public List<GameInfo> PotentialGames { get; set; }
         public GameProcessData GameData { get; set; }
-        public PublicEndPoint PennyBankEndPoint { get; set; }
         public PublicKey PennyBankPublicKey { get; set; }
         public List<GameProcessData> WaterSources { get; set; }
         public List<GameProcessData> BalloonStores { get; set; }
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> OtherPlayers { get; set; }
+        public List<Penny> Pennies { get; set; }
 
         public Player()
         {
@@ -44,6 +44,7 @@ namespace Player
             };
             MyProcessInfo.Status = ProcessInfo.StatusCode.NotInitialized;
             PotentialGames = new List<GameInfo>();
+            Pennies = new List<Penny>();
         }
 
         public override void Start()
