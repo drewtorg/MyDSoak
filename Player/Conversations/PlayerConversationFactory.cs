@@ -34,7 +34,6 @@ namespace Player.Conversations
             // Add(typeof(LowerUmbrella), typeof(LowerUmbrellaConversation));
             Add(typeof(LeaveGameRequest), typeof(LeaveGameConversation));
             // Add(typeof(GetKeyRequest), typeof(GetKeyConversation));
-            Add(typeof(PennyValidation), typeof(PennyValidationConversation));
             Add(typeof(ShutdownRequest), typeof(ShutdownConversation));
         }
     }

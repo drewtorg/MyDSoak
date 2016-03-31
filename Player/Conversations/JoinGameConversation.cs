@@ -28,6 +28,7 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
+            ToProcessId = ((Player)Process).PotentialGames[0].GameManagerId;
             return new JoinGameRequest()
             {
                 Process = Process.MyProcessInfo,
@@ -43,7 +44,8 @@ namespace Player.Conversations
 
         protected override bool IsProcessStateValid()
         {
-            return Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame;
+            return base.IsProcessStateValid() &&
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame;
         }
 
         protected override void ProcessReply(Reply reply)

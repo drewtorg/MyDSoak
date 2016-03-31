@@ -36,7 +36,7 @@ namespace Player.Conversations
             ((Player)Process).Pennies.Clear();
 
             for(int i = 0; i < req.NumberOfPennies; i++)
-                ((Player)Process).Pennies.Add(NetworkStreamExtensions.ReadStreamMessage(stream));
+                ((Player)Process).Pennies.Push(NetworkStreamExtensions.ReadStreamMessage(stream));
 
             return new Reply()
             {

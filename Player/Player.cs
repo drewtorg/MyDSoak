@@ -31,7 +31,8 @@ namespace Player
         public List<GameProcessData> BalloonStores { get; set; }
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> OtherPlayers { get; set; }
-        public List<Penny> Pennies { get; set; }
+        public Stack<Penny> Pennies { get; set; }
+        public List<Balloon> Balloons { get; set; }
 
         public Player()
         {
@@ -44,7 +45,8 @@ namespace Player
             };
             MyProcessInfo.Status = ProcessInfo.StatusCode.NotInitialized;
             PotentialGames = new List<GameInfo>();
-            Pennies = new List<Penny>();
+            Pennies = new Stack<Penny>();
+            Balloons = new List<Balloon>();
         }
 
         public override void Start()
@@ -110,6 +112,12 @@ namespace Player
         private RequestReply Act()
         {
             return null;
+        }
+
+        // TODO
+        protected override void CleanupProcess()
+        {
+            base.CleanupProcess();
         }
     }
 }

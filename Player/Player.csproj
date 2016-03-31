@@ -63,7 +63,6 @@
     <Compile Include="Conversations\GameListConversation.cs" />
     <Compile Include="Conversations\HitByBalloonConversation.cs" />
     <Compile Include="Conversations\LeaveGameConversation.cs" />
-    <Compile Include="Conversations\PennyValidationConversation.cs" />
     <Compile Include="Conversations\ReadyToStartConversation.cs" />
     <Compile Include="Conversations\GameStatusConversation.cs" />
     <Compile Include="Conversations\JoinGameConversation.cs" />
