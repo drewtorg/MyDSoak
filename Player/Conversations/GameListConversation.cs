@@ -26,7 +26,6 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            TargetEndPoint = Process.RegistryEndPoint;
             return new GameListRequest()
             {
                 StatusFilter = (int)GameInfo.StatusCode.Available

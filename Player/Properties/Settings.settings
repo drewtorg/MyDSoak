@@ -24,7 +24,7 @@
       <Value Profile="(Default)">15050</Value>
     </Setting>
     <Setting Name="Timeout" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">500</Value>
+      <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="MaxRetries" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>

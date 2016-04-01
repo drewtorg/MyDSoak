@@ -28,10 +28,9 @@ namespace Player.Conversations
         protected override Message CreateReply()
         {
             AllowanceDeliveryRequest req = Request as AllowanceDeliveryRequest;
-            TcpListener server = new TcpListener(IPAddress.Any, req.PortNumber);
-            server.Start();
-            TcpClient client = server.AcceptTcpClient();
+            TcpClient client = new TcpClient("127.0.0.1", req.PortNumber);
             NetworkStream stream = client.GetStream();
+            stream.ReadTimeout = 100;
 
             ((Player)Process).Pennies.Clear();
 
@@ -47,7 +46,7 @@ namespace Player.Conversations
 
         protected override bool IsProcessStateValid()
         {
-            return base.IsProcessStateValid() && 
+            return base.IsProcessStateValid() &&
                 (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||  // its possible the pennies come before the JoinGameReply
                  Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame);
         }

@@ -28,7 +28,6 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            ToProcessId = ((Player)Process).PotentialGames[0].GameManagerId;
             return new JoinGameRequest()
             {
                 Process = Process.MyProcessInfo,

@@ -44,9 +44,7 @@ namespace Player
                 Type = ProcessInfo.ProcessType.Player
             };
             MyProcessInfo.Status = ProcessInfo.StatusCode.NotInitialized;
-            PotentialGames = new List<GameInfo>();
-            Pennies = new Stack<Penny>();
-            Balloons = new List<Balloon>();
+            CleanupSession();
         }
 
         public override void Start()
@@ -114,10 +112,19 @@ namespace Player
             return null;
         }
 
-        // TODO
-        protected override void CleanupProcess()
+        public override void CleanupSession()
         {
-            base.CleanupProcess();
+            base.CleanupSession();
+            PotentialGames = new List<GameInfo>();
+            Pennies = new Stack<Penny>();
+            Balloons = new List<Balloon>();
+            Game = new GameInfo();
+            GameData = new GameProcessData();
+            PennyBankPublicKey = new PublicKey();
+            WaterSources = new List<GameProcessData>();
+            BalloonStores = new List<GameProcessData>();
+            UmbrellaSuppliers = new List<GameProcessData>();
+            OtherPlayers = new List<GameProcessData>();
         }
     }
 }
