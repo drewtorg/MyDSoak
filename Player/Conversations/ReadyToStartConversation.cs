@@ -9,6 +9,7 @@ using CommSub.Conversations.ResponderConversations;
 using Messages;
 using Messages.ReplyMessages;
 using Messages.RequestMessages;
+using SharedObjects;
 
 namespace Player.Conversations
 {
@@ -24,6 +25,7 @@ namespace Player.Conversations
 
         protected override Message CreateReply()
         {
+            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
             return new Reply()
             {
                 Note = "Let's do this!",
@@ -34,7 +36,7 @@ namespace Player.Conversations
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() && 
-                Process.MyProcessInfo.Status == SharedObjects.ProcessInfo.StatusCode.JoinedGame;
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame;
         }
     }
 }

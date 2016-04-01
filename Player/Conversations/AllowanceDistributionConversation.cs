@@ -48,7 +48,8 @@ namespace Player.Conversations
         {
             return base.IsProcessStateValid() &&
                 (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||  // its possible the pennies come before the JoinGameReply
-                 Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame);
+                 Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame ||
+                 Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame);
         }
     }
 }

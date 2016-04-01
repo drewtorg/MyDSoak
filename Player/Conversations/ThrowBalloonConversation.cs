@@ -23,8 +23,6 @@ namespace Player.Conversations
             Balloon filled = ((Player)Process).Balloons.Where(x => x.IsFilled).First();
             ((Player)Process).Balloons.Remove(filled);
 
-            ToProcessId = ((Player)Process).Game.GameManagerId;
-
             return new ThrowBalloonRequest()
             {
                 TargetPlayerId = ((Player)Process).OtherPlayers.Where(x => x.LifePoints > 0).First().ProcessId,

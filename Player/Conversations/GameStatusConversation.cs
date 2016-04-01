@@ -35,9 +35,6 @@ namespace Player.Conversations
 
             switch(status.Game.Status)
             {
-                case GameInfo.StatusCode.Starting:
-                    ((Player)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
-                    break;
                 case GameInfo.StatusCode.Ending:
                     ((Player)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.LeavingGame;
                     break;

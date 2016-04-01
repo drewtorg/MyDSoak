@@ -20,8 +20,6 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            // change this to find the first that has balloons
-            ToProcessId = ((Player)Process).BalloonStores[0].ProcessId;
             return new BuyBalloonRequest()
             {
                 Penny = ((Player)Process).Pennies.Pop()

@@ -88,12 +88,23 @@ namespace Player
                         conv.ToProcessId = PotentialGames[0].GameManagerId;
                         break;
                     case ProcessInfo.StatusCode.PlayingGame:
-                        conv = Act();
+                        conv = Play();
+                        break;
+                    case ProcessInfo.StatusCode.Won:
+                        EndGame();
+                        break;
+                    case ProcessInfo.StatusCode.Tied:
+                        EndGame();
+                        break;
+                    case ProcessInfo.StatusCode.Lost:
+                        EndGame();
+                        break;
+                    case ProcessInfo.StatusCode.LeavingGame:
+                        EndGame();
                         break;
                     case ProcessInfo.StatusCode.Terminating:
                         Stop();
                         break;
-                        
                 }
 
                 if (conv != null)
@@ -106,10 +117,47 @@ namespace Player
             }
         }
 
+        //public bool CanBuyBalloon()
+        //{
+        //    return Pennies.Count > 1 &&
+        //        BalloonStores.Count > 0;
+        //}
+
+        //public bool CanFillBalloon()
+        //{
+        //    return Pennies.Count > 2 &&
+        //        WaterSources.Count > 0;
+        //}
+
         // This is the method that handles all game logic
-        private RequestReply Act()
+        private RequestReply Play()
         {
-            return null;
+            RequestReply conv = null;
+
+            if(Balloons.Where(x => !x.IsFilled).Count() < 5)
+            {
+                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<BuyBalloonConversation>();
+                conv.ToProcessId = BalloonStores[0].ProcessId;
+            }
+            else if(Balloons.Where(x => x.IsFilled).Count() < 5)
+            {
+                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<FillBalloonConversation>();
+                conv.ToProcessId = WaterSources[0].ProcessId;
+            }
+            else
+            {
+                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<ThrowBalloonConversation>();
+                conv.ToProcessId = OtherPlayers.Where(x => x.LifePoints > 0).First().ProcessId;
+            }
+
+            return conv;
+        }
+
+        // take care of all actions needed to finish a game
+        private void EndGame()
+        {
+            Thread.Sleep(3000);
+            CleanupSession();
         }
 
         public override void CleanupSession()
@@ -125,6 +173,7 @@ namespace Player
             BalloonStores = new List<GameProcessData>();
             UmbrellaSuppliers = new List<GameProcessData>();
             OtherPlayers = new List<GameProcessData>();
+            MyProcessInfo.Status = ProcessInfo.StatusCode.JoiningGame;
         }
     }
 }

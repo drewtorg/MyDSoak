@@ -20,8 +20,6 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            ToProcessId = ((Player)Process).WaterSources[0].ProcessId;
-
             Penny[] pennies = new Penny[2];
             pennies[0] = ((Player)Process).Pennies.Pop();
             pennies[1] = ((Player)Process).Pennies.Pop();
