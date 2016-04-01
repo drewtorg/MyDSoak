@@ -94,6 +94,10 @@ namespace Player
         {
             GameIdLabel.Text = Player.Game.GameId.ToString();
             GameStatusLabel.Text = Player.Game.Status.ToString();
+            NumWSLabel.Text = Player.WaterSources.Count.ToString();
+            NumBSLabel.Text = Player.BalloonStores.Count.ToString();
+            NumUSLabel.Text = Player.UmbrellaSuppliers.Count.ToString();
+            NumPlayerLabel.Text = Player.OtherPlayers.Count.ToString();
         }
 
         private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)

@@ -108,7 +108,7 @@
             this.ProcessListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.ProcessListView.Location = new System.Drawing.Point(12, 75);
             this.ProcessListView.Name = "ProcessListView";
-            this.ProcessListView.Size = new System.Drawing.Size(220, 126);
+            this.ProcessListView.Size = new System.Drawing.Size(220, 152);
             this.ProcessListView.TabIndex = 6;
             this.ProcessListView.UseCompatibleStateImageBehavior = false;
             this.ProcessListView.View = System.Windows.Forms.View.Details;
@@ -121,6 +121,7 @@
             // valueColumn
             // 
             this.valueColumn.Text = "Property Value";
+            this.valueColumn.Width = 87;
             // 
             // StatusLabel
             // 
@@ -158,7 +159,7 @@
             this.panel1.Controls.Add(this.label5);
             this.panel1.Location = new System.Drawing.Point(238, 75);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(167, 126);
+            this.panel1.Size = new System.Drawing.Size(214, 152);
             this.panel1.TabIndex = 9;
             // 
             // NumUSLabel
@@ -283,7 +284,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 219);
+            this.ClientSize = new System.Drawing.Size(464, 239);
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label4);

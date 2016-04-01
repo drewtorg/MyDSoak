@@ -36,7 +36,8 @@ namespace Player.Conversations
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() && 
-                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame;
+                (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame); // this can be received before the JoinGameReply
         }
     }
 }
