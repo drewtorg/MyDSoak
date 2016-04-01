@@ -39,32 +39,67 @@ namespace Player
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            //if(Player != null)
-            //{
-            //    ProcessLabel.Text = Player.PlayerState.Process.Label;
-            //    EndpointLabel.Text = Player.PlayerState.Process.EndPoint.HostAndPort;
-            //    StatusLabel.Text = Player.PlayerState.Process.StatusString;
+            if (Player != null)
+            {
+                ProcessLabel.Text = Player.MyProcessInfo.LabelAndId;
+                StatusLabel.Text = Player.StatusString;
 
-            //    ProcessListView.Items.Clear();
 
-            //    if (Player.PlayerState.Game != null)
-            //    {
-            //        GameIdLabel.Text = Player.PlayerState.Game.GameId.ToString();
-            //        GameStatusLabel.Text = Player.PlayerState.Game.Status.ToString();
-            //        ProcessListView.Items.Add(new ListViewItem(new string[]
-            //        {
-            //            "Life Points",
-            //            Player.PlayerState.Process.LifePoints.ToString()
-            //        }));
-            //    }
-            //}
+                if (Player.Game != null)
+                {
+                    UpdateProcessInfo();
+                    UpdateGameInfo();
+                }
+            }
+        }
+
+        private void UpdateProcessInfo()
+        {
+            ProcessListView.Items.Clear();
+
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+                    {
+                        "Life Points",
+                        Player.GameData.LifePoints.ToString()
+                    }));
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+            {
+                        "Pennies",
+                        Player.Pennies.Count.ToString()
+
+            }));
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+            {
+                        "Unfilled Balloons",
+                        Player.Balloons.Where(x => !x.IsFilled).Count().ToString()
+            }));
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+            {
+                        "Filled Balloons",
+                        Player.Balloons.Where(x => x.IsFilled).Count().ToString()
+            }));
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+            {
+                        "Umbrellas",
+                        "0"
+            }));
+            ProcessListView.Items.Add(new ListViewItem(new string[]
+            {
+                        "Has Umbrella Raised",
+                        "False"
+            }));
+        }
+
+        private void UpdateGameInfo()
+        {
+            GameIdLabel.Text = Player.Game.GameId.ToString();
+            GameStatusLabel.Text = Player.Game.Status.ToString();
         }
 
         private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer.Stop();
             Player.Stop();
-
         }
 
         private void StartStopButton_Click(object sender, EventArgs e)

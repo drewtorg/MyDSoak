@@ -16,7 +16,6 @@ using Messages;
 using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using CommSub;
-using CommSubTesting;
 using System.Threading;
 
 namespace PlayerTesting

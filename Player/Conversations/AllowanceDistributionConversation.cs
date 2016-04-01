@@ -12,6 +12,7 @@ using SharedObjects;
 using System.Net;
 using System.Net.Sockets;
 using CommSub;
+using System.Threading;
 
 namespace Player.Conversations
 {
@@ -32,10 +33,7 @@ namespace Player.Conversations
             NetworkStream stream = client.GetStream();
             stream.ReadTimeout = 100;
 
-            ((Player)Process).Pennies.Clear();
-
-            for(int i = 0; i < req.NumberOfPennies; i++)
-                ((Player)Process).Pennies.Push(NetworkStreamExtensions.ReadStreamMessage(stream));
+            ThreadPool.QueueUserWorkItem(GetPennies, stream);
 
             return new Reply()
             {
@@ -47,9 +45,20 @@ namespace Player.Conversations
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() &&
-                (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||  // its possible the pennies come before the JoinGameReply
+                (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||  // its possible the pennies come before the JoinGameReply or after the game starts
                  Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame ||
                  Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame);
+        }
+
+        private void GetPennies(object myStream)
+        {
+            AllowanceDeliveryRequest req = Request as AllowanceDeliveryRequest;
+            NetworkStream stream = myStream as NetworkStream;
+
+            ((Player)Process).Pennies.Clear();
+
+            for (int i = 0; i < req.NumberOfPennies; i++)
+                ((Player)Process).Pennies.Push(NetworkStreamExtensions.ReadStreamMessage(stream));
         }
     }
 }

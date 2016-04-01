@@ -38,14 +38,8 @@ namespace Player
                 options.SetDefaults();
 
                 Player player = new Player() { Options = options };
-                player.Start();
-
-                while (player.Status == "Running")
-                {
-                    Thread.Sleep(1000);
-                }
-                //PlayerForm form = new PlayerForm() { Player = player };
-                //Application.Run(form);
+                PlayerForm form = new PlayerForm() { Player = player };
+                Application.Run(form);
             }
         }
     }

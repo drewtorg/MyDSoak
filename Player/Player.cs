@@ -117,18 +117,6 @@ namespace Player
             }
         }
 
-        //public bool CanBuyBalloon()
-        //{
-        //    return Pennies.Count > 1 &&
-        //        BalloonStores.Count > 0;
-        //}
-
-        //public bool CanFillBalloon()
-        //{
-        //    return Pennies.Count > 2 &&
-        //        WaterSources.Count > 0;
-        //}
-
         // This is the method that handles all game logic
         private RequestReply Play()
         {
