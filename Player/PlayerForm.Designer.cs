@@ -1,4 +1,8 @@
-﻿namespace Player
+﻿using System;
+using CommSub;
+using System.Threading;
+
+namespace Player
 {
     partial class PlayerForm
     {

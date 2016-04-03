@@ -42,6 +42,7 @@ namespace Player
             if (Player != null)
             {
                 ProcessLabel.Text = Player.MyProcessInfo.LabelAndId;
+                EndpointLabel.Text = Player.MyProcessInfo.EndPoint?.ToString();
                 StatusLabel.Text = Player.StatusString;
 
 

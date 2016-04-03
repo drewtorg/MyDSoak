@@ -61,6 +61,7 @@ namespace Player.Conversations
                     Type = ProcessInfo.ProcessType.Player,
                     ProcessId = joinReply.MsgId.Pid
                 };
+                ((Player)Process).Game = ((Player)Process).PotentialGames[0];
                 Process.MyProcessInfo.Status = ProcessInfo.StatusCode.JoinedGame;
                 ((Player)Process).PotentialGames.Clear();
             }

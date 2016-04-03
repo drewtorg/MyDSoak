@@ -25,7 +25,7 @@ namespace Player.Conversations
 
             return new ThrowBalloonRequest()
             {
-                TargetPlayerId = ((Player)Process).OtherPlayers.Where(x => x.LifePoints > 0).First().ProcessId,
+                TargetPlayerId = ((Player)Process).AlivePlayers.First().ProcessId,
                 Balloon = filled
             };
         }
@@ -34,13 +34,21 @@ namespace Player.Conversations
         {
             return base.IsConversationStateValid() &&
                 ((Player)Process).Balloons.Where(x => x.IsFilled).Count() > 0 &&
-                ((Player)Process).OtherPlayers.Where(x => x.LifePoints > 0).Count() > 0;
+                ((Player)Process).AlivePlayers.Count > 0;
         }
 
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() &&
                 Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
+        }
+
+        protected override void ProcessReply(Reply reply)
+        {
+            if (reply.Success)
+            {
+                ((Player)Process).GameData.ChangeHitPoints(1);
+            }
         }
     }
 }

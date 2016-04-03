@@ -31,23 +31,29 @@ namespace Player
         public List<GameProcessData> BalloonStores { get; set; }
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> OtherPlayers { get; set; }
+        public List<GameProcessData> AlivePlayers { get { return OtherPlayers.Where(x => x.LifePoints > 0).ToList(); } }
         public Stack<Penny> Pennies { get; set; }
         public List<Balloon> Balloons { get; set; }
 
         public Player()
         {
-            Label = "Player";
+            Label = "Drew's Player";
             MyProcessInfo = new ProcessInfo()
             {
                 Status = ProcessInfo.StatusCode.NotInitialized,
                 Label = Label,
                 Type = ProcessInfo.ProcessType.Player
             };
-            MyProcessInfo.Status = ProcessInfo.StatusCode.NotInitialized;
             CleanupSession();
         }
 
         public override void Start()
+        {
+            Initialize();
+            base.Start();
+        }
+
+        public void Initialize()
         {
             MyProcessInfo.Status = ProcessInfo.StatusCode.Initializing;
             RegistryEndPoint = new PublicEndPoint(Options.Registry);
@@ -64,48 +70,13 @@ namespace Player
                 DefaultTimeout = Options.Timeout,
                 Process = this
             });
-            base.Start();
         }
 
         protected override void Process(object state)
         {
             while (Status == "Running")
             {
-                RequestReply conv = null;
-
-                switch (MyProcessInfo.Status)
-                {
-                    case ProcessInfo.StatusCode.Initializing:
-                        conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LoginConversation>();
-                        conv.TargetEndPoint = RegistryEndPoint;
-                        break;
-                    case ProcessInfo.StatusCode.Registered:
-                        conv = CommSubsystem.ConversationFactory.CreateFromConversationType<GameListConversation>();
-                        conv.TargetEndPoint = RegistryEndPoint;
-                        break;
-                    case ProcessInfo.StatusCode.JoiningGame:
-                        conv = CommSubsystem.ConversationFactory.CreateFromConversationType<JoinGameConversation>();
-                        conv.ToProcessId = PotentialGames[0].GameManagerId;
-                        break;
-                    case ProcessInfo.StatusCode.PlayingGame:
-                        conv = Play();
-                        break;
-                    case ProcessInfo.StatusCode.Won:
-                        EndGame();
-                        break;
-                    case ProcessInfo.StatusCode.Tied:
-                        EndGame();
-                        break;
-                    case ProcessInfo.StatusCode.Lost:
-                        EndGame();
-                        break;
-                    case ProcessInfo.StatusCode.LeavingGame:
-                        EndGame();
-                        break;
-                    case ProcessInfo.StatusCode.Terminating:
-                        Stop();
-                        break;
-                }
+                Conversation conv = GetConversation();
 
                 if (conv != null)
                 {
@@ -117,40 +88,87 @@ namespace Player
             }
         }
 
-        // This is the method that handles all game logic
-        private RequestReply Play()
+        protected RequestReply GetConversation()
         {
             RequestReply conv = null;
 
-            if(Balloons.Where(x => !x.IsFilled).Count() < 5)
+            switch (MyProcessInfo.Status)
             {
-                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<BuyBalloonConversation>();
-                conv.ToProcessId = BalloonStores[0].ProcessId;
+                case ProcessInfo.StatusCode.Initializing:
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LoginConversation>();
+                    conv.TargetEndPoint = RegistryEndPoint;
+                    break;
+                case ProcessInfo.StatusCode.Registered:
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<GameListConversation>();
+                    conv.TargetEndPoint = RegistryEndPoint;
+                    break;
+                case ProcessInfo.StatusCode.JoiningGame:
+                    if (PotentialGames.Count > 0)
+                    {
+                        conv = CommSubsystem.ConversationFactory.CreateFromConversationType<JoinGameConversation>();
+                        conv.ToProcessId = PotentialGames[0].GameManagerId;
+                    }
+                    else MyProcessInfo.Status = ProcessInfo.StatusCode.Registered; // maybe do this in the Conversation failure
+                    break;
+                case ProcessInfo.StatusCode.PlayingGame:
+                    conv = Play();
+                    break;
+                case ProcessInfo.StatusCode.Won:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Tied:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Lost:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.LeavingGame:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Terminating:
+                    Stop();
+                    break;
             }
-            else if(Balloons.Where(x => x.IsFilled).Count() < 5)
+            return conv;
+        }
+
+        // This is the method that handles all game logic
+        protected RequestReply Play()
+        {
+            RequestReply conv = null;
+
+            if (MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame)
             {
-                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<FillBalloonConversation>();
-                conv.ToProcessId = WaterSources[0].ProcessId;
-            }
-            else
-            {
-                conv = CommSubsystem.ConversationFactory.CreateFromConversationType<ThrowBalloonConversation>();
-                conv.ToProcessId = OtherPlayers.Where(x => x.LifePoints > 0).First().ProcessId;
+                if (Balloons.Count == 0 && BalloonStores.Count > 0)
+                {
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<BuyBalloonConversation>();
+                    conv.ToProcessId = BalloonStores.First().ProcessId;
+                }
+                else if (Balloons.Where(x => !x.IsFilled).Count() > 0 && WaterSources.Count > 0)
+                {
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<FillBalloonConversation>();
+                    conv.ToProcessId = WaterSources.First().ProcessId;
+                }
+                else if (AlivePlayers.Count > 0)
+                {
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<ThrowBalloonConversation>();
+                    conv.ToProcessId = Game.GameManagerId;
+                }
             }
 
             return conv;
         }
 
         // take care of all actions needed to finish a game
-        private void EndGame()
+        protected void EndGame()
         {
             Thread.Sleep(3000);
             CleanupSession();
+            MyProcessInfo.Status = ProcessInfo.StatusCode.Registered;
         }
 
         public override void CleanupSession()
         {
-            base.CleanupSession();
             PotentialGames = new List<GameInfo>();
             Pennies = new Stack<Penny>();
             Balloons = new List<Balloon>();
@@ -161,7 +179,6 @@ namespace Player
             BalloonStores = new List<GameProcessData>();
             UmbrellaSuppliers = new List<GameProcessData>();
             OtherPlayers = new List<GameProcessData>();
-            MyProcessInfo.Status = ProcessInfo.StatusCode.JoiningGame;
         }
     }
 }
