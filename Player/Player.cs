@@ -69,7 +69,7 @@ namespace Player
                 DefaultMaxRetries = Options.Retries,
                 DefaultTimeout = Options.Timeout,
                 Process = this
-            });
+            }, minPort:Options.MinPort, maxPort:Options.MaxPort);
         }
 
         protected override void Process(object state)
