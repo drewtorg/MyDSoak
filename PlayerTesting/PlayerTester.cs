@@ -1025,7 +1025,7 @@ namespace PlayerTesting
             Reply reply = env.ActualMessage as Reply;
 
             Assert.That(reply.Success, Is.True);
-            Assert.That(player.MyProcessInfo.Status, Is.EqualTo(ProcessInfo.StatusCode.JoinedGame));
+            Assert.That(player.MyProcessInfo.Status, Is.EqualTo(ProcessInfo.StatusCode.PlayingGame));
 
             mockRegistry.Stop();
         }

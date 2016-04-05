@@ -53,7 +53,9 @@ namespace Player.Conversations
         protected override bool IsConversationStateValid()
         {
             return base.IsConversationStateValid() &&
-                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
+                (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame ||
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame ||
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame);
         }
     }
 }

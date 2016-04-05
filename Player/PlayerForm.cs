@@ -103,8 +103,11 @@ namespace Player
 
         private void PlayerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            timer.Stop();
-            Player.Stop();
+            if (Player.Status == "Running")
+            {
+                timer.Stop();
+                Player.Stop();
+            }
         }
 
         private void StartStopButton_Click(object sender, EventArgs e)
@@ -113,12 +116,19 @@ namespace Player
             {
                 if (Player != null)
                 {
+                    Player.Shutdown += Player_Shutdown;
+
                     Player.Start();
                     started = true;
                     StartButton.Enabled = false;
                     timer.Start();
                 }
             }
+        }
+
+        private void Player_Shutdown(CommSub.StateChange changeInfo)
+        {
+            Close();
         }
     }
 }
