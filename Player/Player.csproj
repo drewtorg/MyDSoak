@@ -59,6 +59,7 @@
     <Compile Include="Conversations\AliveConversation.cs" />
     <Compile Include="Conversations\AllowanceDistributionConversation.cs" />
     <Compile Include="Conversations\BuyBalloonConversation.cs" />
+    <Compile Include="Conversations\ExitGameConversation.cs" />
     <Compile Include="Conversations\FillBalloonConversation.cs" />
     <Compile Include="Conversations\GameListConversation.cs" />
     <Compile Include="Conversations\HitByBalloonConversation.cs" />
@@ -90,13 +91,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="States\InitializingPlayerState.cs" />
-    <Compile Include="States\JoinedGamePlayerState.cs" />
-    <Compile Include="States\JoiningGamePlayerState.cs" />
-    <Compile Include="States\PlayerState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="States\RegisteredPlayerState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -37,7 +37,7 @@ namespace Player.Conversations
             if (reply.Success)
             {
                 Process.CleanupSession();
-                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.JoiningGame;
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.Registered;
             }
         }
     }

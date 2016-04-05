@@ -21,7 +21,7 @@ namespace Player.Conversations
             }
         }
 
-        protected override void HandleRequest(Request request)
+        protected override void HandleRequest(Message request)
         {
             Process.BeginShutdown();
         }

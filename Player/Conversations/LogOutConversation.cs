@@ -9,7 +9,6 @@ using Messages.RequestMessages;
 using SharedObjects;
 using log4net;
 using Messages.ReplyMessages;
-using Player.States;
 using Messages;
 
 namespace Player.Conversations
@@ -28,12 +27,7 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            return new LoginRequest()
-            {
-                ProcessLabel = Process.Label,
-                ProcessType = ProcessInfo.ProcessType.Player,
-                Identity = ((Player)Process).Identity
-            };
+            return new LogoutRequest();
         }
 
         protected override bool IsProcessStateValid()
@@ -44,7 +38,6 @@ namespace Player.Conversations
 
         protected override void ProcessReply(Reply reply)
         {
-            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.Terminating;
             Process.BeginShutdown();
         }
     }

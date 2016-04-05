@@ -22,7 +22,7 @@ namespace Player.Conversations
             }
         }
 
-        protected override void HandleRequest(Request request)
+        protected override void HandleRequest(Message request)
         {
             GameStatusNotification status = request as GameStatusNotification;
             ((Player)Process).Game.Status = status.Game.Status;
@@ -48,6 +48,12 @@ namespace Player.Conversations
                     break;
             }
 
+        }
+
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid() &&
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
         }
     }
 }

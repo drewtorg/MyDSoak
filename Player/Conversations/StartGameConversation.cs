@@ -9,6 +9,7 @@ using CommSub.Conversations.ReceiverConversations;
 using Messages.ReplyMessages;
 using SharedObjects;
 using Messages.RequestMessages;
+using Messages;
 
 namespace Player.Conversations
 {
@@ -22,9 +23,13 @@ namespace Player.Conversations
             }
         }
 
-        protected override void HandleRequest(Request request)
+        protected override void HandleRequest(Message request)
         {
-            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+            StartGame start = request as StartGame;
+            if (start.Success)
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+            else
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.LeavingGame;
         }
     }
 }

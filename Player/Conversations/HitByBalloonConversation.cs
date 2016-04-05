@@ -28,12 +28,6 @@ namespace Player.Conversations
             };
         }
 
-        protected override bool IsConversationStateValid()
-        {
-            return base.IsConversationStateValid() && 
-                ((Player)Process).GameData.LifePoints > 0;
-        }
-
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() && 

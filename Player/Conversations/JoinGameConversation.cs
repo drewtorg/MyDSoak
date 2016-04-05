@@ -9,7 +9,6 @@ using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using log4net;
 using SharedObjects;
-using Player.States;
 using Messages;
 
 namespace Player.Conversations
@@ -56,10 +55,10 @@ namespace Player.Conversations
                 ((Player)Process).GameData = new GameProcessData()
                 {
                     HasUmbrellaRaised = false,
-                    HitPoints = joinReply.InitialLifePoints,
+                    HitPoints = 0,
                     LifePoints = joinReply.InitialLifePoints,
                     Type = ProcessInfo.ProcessType.Player,
-                    ProcessId = joinReply.MsgId.Pid
+                    ProcessId = joinReply.MsgId.Pid,
                 };
                 ((Player)Process).Game = ((Player)Process).PotentialGames[0];
                 Process.MyProcessInfo.Status = ProcessInfo.StatusCode.JoinedGame;

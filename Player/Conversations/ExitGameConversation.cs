@@ -6,37 +6,39 @@ using System.Threading.Tasks;
 
 using CommSub.Conversations.ResponderConversations;
 
-using Messages;
 using Messages.ReplyMessages;
 using Messages.RequestMessages;
+
+using log4net;
+using Messages;
 using SharedObjects;
 
 namespace Player.Conversations
 {
-    public class ReadyToStartConversation : RequestReply
+    public class ExitGameConversation : RequestReply
     {
         protected override Type[] AllowedTypes
         {
             get
             {
-                return new[] { typeof(ReadyToStart) };
+                return new Type[]{ typeof(ExitGameRequest) };
             }
         }
 
         protected override Message CreateReply()
         {
+            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.LeavingGame;
             return new Reply()
             {
-                Note = "Let's do this!",
-                Success = true
+                Success = true,
+                Note = "Okay..."
             };
         }
 
-        protected override bool IsProcessStateValid()
+        protected override bool IsConversationStateValid()
         {
-            return base.IsProcessStateValid() && 
-                (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||
-                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame); // this can be received before the JoinGameReply
+            return base.IsConversationStateValid() && 
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
         }
     }
 }

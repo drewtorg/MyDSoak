@@ -9,7 +9,6 @@ using Messages.RequestMessages;
 using Messages.ReplyMessages;
 using SharedObjects;
 using log4net;
-using Player.States;
 using Messages;
 
 namespace Player.Conversations

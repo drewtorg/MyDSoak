@@ -24,6 +24,7 @@ namespace Player.Conversations
             Add(typeof(JoinGameRequest), typeof(JoinGameConversation));
             Add(typeof(AllowanceDeliveryRequest), typeof(AllowanceDistributionConversation));
             Add(typeof(ReadyToStart), typeof(ReadyToStartConversation));
+            Add(typeof(StartGame), typeof(StartGameConversation));
             Add(typeof(GameStatusNotification), typeof(GameStatusConversation));
             Add(typeof(BuyBalloonRequest), typeof(BuyBalloonConversation));
             Add(typeof(FillBalloonRequest), typeof(FillBalloonConversation));
@@ -35,6 +36,7 @@ namespace Player.Conversations
             Add(typeof(LeaveGameRequest), typeof(LeaveGameConversation));
             // Add(typeof(GetKeyRequest), typeof(GetKeyConversation));
             Add(typeof(ShutdownRequest), typeof(ShutdownConversation));
+            Add(typeof(ExitGameRequest), typeof(ExitGameConversation));
         }
     }
 }
