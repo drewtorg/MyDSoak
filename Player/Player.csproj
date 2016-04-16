@@ -58,12 +58,15 @@
   <ItemGroup>
     <Compile Include="Conversations\AliveConversation.cs" />
     <Compile Include="Conversations\AllowanceDistributionConversation.cs" />
+    <Compile Include="Conversations\AuctionConversation.cs" />
     <Compile Include="Conversations\BuyBalloonConversation.cs" />
     <Compile Include="Conversations\ExitGameConversation.cs" />
     <Compile Include="Conversations\FillBalloonConversation.cs" />
     <Compile Include="Conversations\GameListConversation.cs" />
     <Compile Include="Conversations\HitByBalloonConversation.cs" />
     <Compile Include="Conversations\LeaveGameConversation.cs" />
+    <Compile Include="Conversations\LowerUmbrellaConversation.cs" />
+    <Compile Include="Conversations\RaiseUmbrellaConversation.cs" />
     <Compile Include="Conversations\ReadyToStartConversation.cs" />
     <Compile Include="Conversations\GameStatusConversation.cs" />
     <Compile Include="Conversations\JoinGameConversation.cs" />

@@ -78,12 +78,7 @@ namespace Player
                 Conversation conv = GetConversation();
 
                 if (conv != null)
-                {
-                    conv.Launch();
-
-                    while (!conv.Done)
-                        Thread.Sleep(1000);
-                }
+                    conv.Execute();
             }
         }
 

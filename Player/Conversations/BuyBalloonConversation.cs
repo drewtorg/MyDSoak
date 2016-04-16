@@ -10,6 +10,8 @@ namespace Player.Conversations
 {
     public class BuyBalloonConversation : RequestReply
     {
+        Penny penny = null;
+
         protected override Type[] AllowedReplyTypes
         {
             get
@@ -20,9 +22,10 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
+            penny = ((Player)Process).Pennies.Pop();
             return new BuyBalloonRequest()
             {
-                Penny = ((Player)Process).Pennies.Pop()
+                Penny = penny
             };
         }
 
@@ -31,6 +34,8 @@ namespace Player.Conversations
             BalloonReply balloon = reply as BalloonReply;
             if (balloon.Success)
                 ((Player)Process).Balloons.Add(balloon.Balloon);
+            else
+                ((Player)Process).Pennies.Push(penny);
         }
 
         protected override bool IsProcessStateValid()
