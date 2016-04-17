@@ -1,6 +1,41 @@
-﻿namespace Player.Conversations
+﻿
+using System;
+using CommSub.Conversations.ResponderConversations;
+using Messages;
+using Messages.RequestMessages;
+using Messages.ReplyMessages;
+using SharedObjects;
+
+namespace Player.Conversations
 {
-    internal class LowerUmbrellaConversation
+    public class LowerUmbrellaConversation : RequestReply
     {
+        protected override Type[] AllowedTypes
+        {
+            get
+            {
+                return new Type[] { typeof(LowerUmbrella) };
+            }
+        }
+
+        protected override Message CreateReply()
+        {
+            ((Player)Process).Umbrella = null;
+            return new Reply()
+            {
+                Success = true
+            };
+        }
+
+        protected override bool IsProcessStateValid()
+        {
+            return base.IsProcessStateValid() &&
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
+        }
+
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid() && ((Player)Process).Umbrella != null;
+        }
     }
 }

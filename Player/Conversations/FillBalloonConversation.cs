@@ -22,11 +22,16 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            pennies[0] = ((Player)Process).Pennies.Pop();
-            pennies[1] = ((Player)Process).Pennies.Pop();
+            ((Player)Process).Pennies.TryPopRange(pennies);
 
-            Balloon unfilled = ((Player)Process).Balloons.Where(x => x.IsFilled == false).First();
-            ((Player)Process).Balloons.Remove(unfilled);
+            Balloon unfilled = null;
+            ((Player)Process).Balloons.TryDequeue(out unfilled);
+
+            while (unfilled.IsFilled)
+            {
+                ((Player)Process).Balloons.Enqueue(unfilled);
+                ((Player)Process).Balloons.TryDequeue(out unfilled);
+            }
 
             return new FillBalloonRequest()
             {
@@ -53,7 +58,7 @@ namespace Player.Conversations
             BalloonReply balloon = reply as BalloonReply;
 
             if(reply.Success)
-                ((Player)Process).Balloons.Add(balloon.Balloon);
+                ((Player)Process).Balloons.Enqueue(balloon.Balloon);
             else
             {
                 ((Player)Process).Pennies.Push(pennies[0]);

@@ -20,8 +20,14 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            Balloon filled = ((Player)Process).Balloons.Where(x => x.IsFilled).First();
-            ((Player)Process).Balloons.Remove(filled);
+            Balloon filled = null;
+            ((Player)Process).Balloons.TryDequeue(out filled);
+
+            while (!filled.IsFilled)
+            {
+                ((Player)Process).Balloons.Enqueue(filled);
+                ((Player)Process).Balloons.TryDequeue(out filled);
+            }
 
             return new ThrowBalloonRequest()
             {

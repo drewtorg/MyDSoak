@@ -14,6 +14,7 @@ using SharedObjects;
 
 using Player.Conversations;
 using log4net;
+using System.Collections.Concurrent;
 
 namespace Player
 {
@@ -31,8 +32,9 @@ namespace Player
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> OtherPlayers { get; set; }
         public List<GameProcessData> AlivePlayers { get { return OtherPlayers.Where(x => x.LifePoints > 0).ToList(); } }
-        public Stack<Penny> Pennies { get; set; }
-        public List<Balloon> Balloons { get; set; }
+        public ConcurrentStack<Penny> Pennies { get; set; }
+        public ConcurrentQueue<Balloon> Balloons { get; set; }
+        public Umbrella Umbrella { get; set; }
 
         public Player()
         {
@@ -164,8 +166,8 @@ namespace Player
         public override void CleanupSession()
         {
             PotentialGames = new List<GameInfo>();
-            Pennies = new Stack<Penny>();
-            Balloons = new List<Balloon>();
+            Pennies = new ConcurrentStack<Penny>();
+            Balloons = new ConcurrentQueue<Balloon>();
             Game = new GameInfo();
             GameData = new GameProcessData();
             PennyBankPublicKey = new PublicKey();

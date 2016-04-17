@@ -148,7 +148,7 @@ namespace PlayerTesting
             Assert.That(conv.ToProcessId, Is.EqualTo(3));
             Assert.That(conv.TargetEndPoint, Is.Null);
 
-            player.Balloons.Add(new Balloon() { IsFilled = false });
+            player.Balloons.Enqueue(new Balloon() { IsFilled = false });
             player.WaterSources.Add(new GameProcessData() { ProcessId = 4 });
             conv = player.Play();
 
@@ -156,7 +156,10 @@ namespace PlayerTesting
             Assert.That(conv.ToProcessId, Is.EqualTo(4));
             Assert.That(conv.TargetEndPoint, Is.Null);
 
-            player.Balloons[0].IsFilled = true;
+            Balloon balloon = null;
+            player.Balloons.TryDequeue(out balloon);
+            balloon.IsFilled = true;
+            player.Balloons.Enqueue(balloon);
             player.OtherPlayers.Add(new GameProcessData() { ProcessId = 6, LifePoints = 100 });
             player.Game.GameManagerId = 5;
             conv = player.Play();
@@ -391,8 +394,12 @@ namespace PlayerTesting
             Thread.Sleep(2000);
 
             Assert.That(player.Balloons.Count, Is.GreaterThan(0));
-            Assert.That(player.Balloons[0].Id, Is.EqualTo(1));
-            Assert.That(player.Balloons[0].IsFilled, Is.False);
+
+            Balloon balloon = null;
+            player.Balloons.TryDequeue(out balloon);
+
+            Assert.That(balloon.Id, Is.EqualTo(1));
+            Assert.That(balloon.IsFilled, Is.False);
 
             mockRegistry.Stop();
         }
@@ -468,7 +475,7 @@ namespace PlayerTesting
 
             //test succesful conversation
             player.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
-            player.Balloons.Add(balloon);
+            player.Balloons.Enqueue(balloon);
             player.Pennies.Push(penny1);
             player.Pennies.Push(penny2);
 
@@ -507,8 +514,12 @@ namespace PlayerTesting
             Thread.Sleep(2000);
 
             Assert.That(player.Balloons.Count, Is.GreaterThan(0));
-            Assert.That(player.Balloons[0].Id, Is.EqualTo(1));
-            Assert.That(player.Balloons[0].IsFilled, Is.True);
+
+            balloon = null;
+            player.Balloons.TryDequeue(out balloon);
+
+            Assert.That(balloon.Id, Is.EqualTo(1));
+            Assert.That(balloon.IsFilled, Is.True);
 
             mockRegistry.Stop();
         }
@@ -1219,7 +1230,7 @@ namespace PlayerTesting
             //test no filled balloons
             player.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
             player.OtherPlayers.Add(new GameProcessData() { LifePoints = 10 });
-            player.Balloons.Add(new Balloon() { Id = 1, IsFilled = false });
+            player.Balloons.Enqueue(new Balloon() { Id = 1, IsFilled = false });
 
             conv = player.CommSubsystem.ConversationFactory.CreateFromConversationType<ThrowBalloonConversation>();
             conv.ToProcessId = 3;
@@ -1232,7 +1243,7 @@ namespace PlayerTesting
 
             //test no other players
             player.OtherPlayers[0].LifePoints = 0;
-            player.Balloons.Add(new Balloon() { Id = 2, IsFilled = true });
+            player.Balloons.Enqueue(new Balloon() { Id = 2, IsFilled = true });
 
             conv = player.CommSubsystem.ConversationFactory.CreateFromConversationType<ThrowBalloonConversation>();
             conv.ToProcessId = 3;
@@ -1350,7 +1361,7 @@ namespace PlayerTesting
 
             Assert.That(reply.Success, Is.True);
             Assert.That(player.Pennies.Count, Is.EqualTo(1));
-            Assert.That(player.Pennies.Pop().Id, Is.EqualTo(1));
+            Assert.That(player.Pennies.First(), Is.EqualTo(1));
 
             mockRegistry.Stop();
         }
