@@ -15,6 +15,11 @@ namespace BalloonStore
         public ResourceSet<Balloon> Balloons { get; set; }
         public PublicKey PennyBankPublicKey { get; set; }
         new public BalloonStoreOptions Options { get; set; }
+        public List<GameProcessData> WaterSources { get; set; }
+        public List<GameProcessData> BalloonStores { get; set; }
+        public List<GameProcessData> UmbrellaSuppliers { get; set; }
+        public List<GameProcessData> Players { get; set; }
+        public GameInfo Game { get; set; }
 
         public override void Start()
         {
@@ -32,12 +37,14 @@ namespace BalloonStore
                 DefaultTimeout = Options.Timeout,
                 Process = this
             }, minPort: Options.MinPort, maxPort: Options.MaxPort);
-            CreateBalloons();
         }
 
         private void CreateBalloons()
         {
+            if(PennyBankPublicKey != null)
+            {
 
+            }
         }
 
         protected override void Process(object state)
@@ -58,7 +65,11 @@ namespace BalloonStore
 
         public override void CleanupSession()
         {
-
+            Game = new GameInfo();
+            PennyBankPublicKey = new PublicKey();
+            WaterSources = new List<GameProcessData>();
+            BalloonStores = new List<GameProcessData>();
+            UmbrellaSuppliers = new List<GameProcessData>();
         }
     }
 }

@@ -14,10 +14,6 @@ namespace BalloonStore
     {
         private static ILog Logger = LogManager.GetLogger(typeof(Program));
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
         static void Main(string[] args)
         {
             XmlConfigurator.Configure();
@@ -34,7 +30,8 @@ namespace BalloonStore
                 options.SetDefaults();
 
                 BalloonStore store = new BalloonStore() { Options = options };
-                BalloonStoreForm form = new BalloonStoreForm() { BalloonStore = store };
+                BalloonStoreForm form = new BalloonStoreForm(store);
+                store.Start();
                 Application.Run(form);
             }
         }
