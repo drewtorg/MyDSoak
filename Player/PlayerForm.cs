@@ -128,7 +128,10 @@ namespace Player
 
         private void Player_Shutdown(CommSub.StateChange changeInfo)
         {
-            Close();
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(delegate { Close(); }));
+            else
+                Close();
         }
     }
 }

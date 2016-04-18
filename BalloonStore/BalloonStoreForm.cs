@@ -80,7 +80,15 @@ namespace BalloonStore
 
         private void BalloonStore_Shutdown(CommSub.StateChange changeInfo)
         {
-            Close();
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(delegate { Close(); }));
+            else
+                Close();
+        }
+
+        private void BalloonStoreForm_Shown(object sender, EventArgs e)
+        {
+            timer.Start();
         }
     }
 }

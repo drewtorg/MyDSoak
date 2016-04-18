@@ -37,7 +37,9 @@ namespace BalloonStore
                 Type = ProcessInfo.ProcessType.BalloonStore,
                 Label = Options.Label
             };
+
             RegistryEndPoint = new PublicEndPoint(Options.Registry);
+
             Identity = new IdentityInfo()
             {
                 Alias = Options.Alias,
@@ -45,12 +47,15 @@ namespace BalloonStore
                 FirstName = Options.FirstName,
                 LastName = Options.LastName
             };
+
             SetupCommSubsystem(new BalloonStoreConversationFactory()
             {
                 DefaultMaxRetries = Options.Retries,
                 DefaultTimeout = Options.Timeout,
                 Process = this
             }, minPort: Options.MinPort, maxPort: Options.MaxPort);
+
+            Balloons = new ResourceSet<Balloon>();
         }
 
         public void CreateBalloons()

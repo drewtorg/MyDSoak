@@ -285,6 +285,7 @@
             this.Controls.Add(this.label1);
             this.Name = "BalloonStoreForm";
             this.Text = "BalloonStore";
+            this.Shown += new System.EventHandler(this.BalloonStoreForm_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
