@@ -21,6 +21,7 @@ namespace Player.Conversations
         protected override Message CreateReply()
         {
             ((Player)Process).Umbrella = null;
+            ((Player)Process).UmbrellaRaised = false;
             return new Reply()
             {
                 Success = true

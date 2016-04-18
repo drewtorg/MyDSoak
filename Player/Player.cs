@@ -35,6 +35,7 @@ namespace Player
         public ConcurrentStack<Penny> Pennies { get; set; }
         public ConcurrentQueue<Balloon> Balloons { get; set; }
         public Umbrella Umbrella { get; set; }
+        public bool UmbrellaRaised { get; set; }
 
         public Player()
         {
@@ -135,7 +136,12 @@ namespace Player
 
             if (MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame)
             {
-                if (Balloons.Count == 0 && BalloonStores.Count > 0)
+                if(Umbrella != null && UmbrellaRaised == false)
+                {
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<RaiseUmbrellaConversation>();
+                    conv.ToProcessId = Game.GameManagerId;
+                }
+                else if (Balloons.Count == 0 && BalloonStores.Count > 0)
                 {
                     conv = CommSubsystem.ConversationFactory.CreateFromConversationType<BuyBalloonConversation>();
                     conv.ToProcessId = BalloonStores.First().ProcessId;
@@ -175,6 +181,8 @@ namespace Player
             BalloonStores = new List<GameProcessData>();
             UmbrellaSuppliers = new List<GameProcessData>();
             OtherPlayers = new List<GameProcessData>();
+            Umbrella = null;
+            UmbrellaRaised = false;
         }
     }
 }

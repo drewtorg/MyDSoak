@@ -30,6 +30,12 @@ namespace Player.Conversations
             };
         }
 
+        protected override void ProcessReply(Reply reply)
+        {
+            if (reply.Success)
+                ((Player)Process).UmbrellaRaised = true;
+        }
+
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() &&
@@ -38,7 +44,9 @@ namespace Player.Conversations
 
         protected override bool IsConversationStateValid()
         {
-            return base.IsConversationStateValid() && ((Player)Process).Umbrella != null;
+            return base.IsConversationStateValid() 
+                && ((Player)Process).Umbrella != null
+                && ((Player)Process).UmbrellaRaised == false;
         }
     }
 }

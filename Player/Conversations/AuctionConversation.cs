@@ -9,7 +9,6 @@ namespace Player.Conversations
 {
     public class AuctionConversation : RequestReply
     {
-        public int BidAmount { get; set; }
         private Penny[] pennies = null;
 
         protected override Type[] AllowedTypes
@@ -28,7 +27,7 @@ namespace Player.Conversations
 
             if (auction.MinimumBid <= ((Player)Process).Pennies.Count)
             {
-                pennies = new Penny[BidAmount];
+                pennies = new Penny[auction.MinimumBid];
                 ((Player)Process).Pennies.TryPopRange(pennies);
                 bid =  new Bid()
                 {

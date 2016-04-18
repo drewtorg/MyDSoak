@@ -1365,5 +1365,177 @@ namespace PlayerTesting
 
             mockRegistry.Stop();
         }
+
+        [Test]
+        public void Player_TestUmbrellaConversations()
+        {
+            Communicator mockRegistry = new Communicator() { MinPort = 13000, MaxPort = 13050 };
+
+            mockRegistry.Start();
+            PublicEndPoint mockEp = new PublicEndPoint(String.Format("127.0.0.1:{0}", mockRegistry.Port));
+
+            player.ProxyEndPoint = mockEp;
+
+            //test wrong status
+            player.MyProcessInfo.Status = ProcessInfo.StatusCode.NotInitialized;
+
+            RaiseUmbrellaConversation conv = player.CommSubsystem.ConversationFactory.CreateFromConversationType<RaiseUmbrellaConversation>();
+            conv.ToProcessId = 3;
+
+            conv.Launch();
+
+            Envelope env = mockRegistry.Receive(1000);
+
+            Assert.That(env, Is.Null);
+
+            //test no umbrella
+            player.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+
+            conv = player.CommSubsystem.ConversationFactory.CreateFromConversationType<RaiseUmbrellaConversation>();
+            conv.ToProcessId = 3;
+
+            conv.Launch();
+
+            env = mockRegistry.Receive(1000);
+
+            Assert.That(env, Is.Null);
+            
+            //test successful RaiseUmbrellaConversation
+            conv = player.CommSubsystem.ConversationFactory.CreateFromConversationType<RaiseUmbrellaConversation>();
+            conv.TargetEndPoint = mockEp;
+            player.Umbrella = new Umbrella() { Id = 1 };
+
+            conv.Launch();
+
+            env = mockRegistry.Receive(1000);
+
+            IPEndPoint playerEp = env.IPEndPoint;
+
+            RaiseUmbrella req = env.ActualMessage as RaiseUmbrella;
+            
+            Assert.That(req.Umbrella.Id, Is.EqualTo(1));
+
+            env = new Envelope()
+            {
+                IPEndPoint = playerEp,
+                Message = new Reply()
+                {
+                    ConvId = req.ConvId,
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    Success = true
+                }
+            };
+
+            mockRegistry.Send(env);
+
+            Thread.Sleep(2000);
+
+            Assert.That(player.UmbrellaRaised, Is.True);
+
+            //now test LowerUmbrellaConversation
+            env = new Envelope()
+            {
+                IPEndPoint = playerEp,
+                Message = new LowerUmbrella()
+                {
+                    ConvId = req.ConvId,
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 2 },
+                    UmbrellaId = 1
+                }
+            };
+
+            mockRegistry.Send(env);
+
+            Thread.Sleep(2000);
+
+            Assert.That(player.UmbrellaRaised, Is.False);
+
+            mockRegistry.Stop();
+        }
+
+        [Test]
+        public void Player_TestBidConversation()
+        {
+            Communicator mockRegistry = new Communicator() { MinPort = 13000, MaxPort = 13050 };
+
+            mockRegistry.Start();
+            PublicEndPoint mockEp = new PublicEndPoint(String.Format("127.0.0.1:{0}", mockRegistry.Port));
+
+            player.MyProcessInfo.Status = ProcessInfo.StatusCode.Initializing;
+            player.RegistryEndPoint = mockEp;
+            player.GetConversation().Launch(); // launch a bogus conversation in order to get the player endpoint
+
+            Envelope env = mockRegistry.Receive(1000);
+
+            IPEndPoint playerEp = env.IPEndPoint;
+
+            // test wrong state
+            player.MyProcessInfo.Status = ProcessInfo.StatusCode.Registered;
+            env = new Envelope()
+            {
+                IPEndPoint = playerEp,
+                Message = new AuctionAnnouncement()
+                {
+                    ConvId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    MinimumBid = 100
+                }
+            };
+
+            mockRegistry.Send(env);
+
+            env = mockRegistry.Receive(1000);
+
+            Assert.That(env, Is.Null);
+
+            // test successful conversation
+            player.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+            Penny[] pennies = new Penny []{ new Penny() { Id = 1 }, new Penny() { Id = 2 }, new Penny() { Id = 3 } };
+            player.Pennies.PushRange(pennies);
+            env = new Envelope()
+            {
+                IPEndPoint = playerEp,
+                Message = new AuctionAnnouncement()
+                {
+                    ConvId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    MinimumBid = 2
+                }
+            };
+
+            mockRegistry.Send(env);
+
+            env = mockRegistry.Receive(2000);
+
+            Bid bid = env.ActualMessage as Bid;
+
+            Assert.That(bid.Success, Is.True);
+            Assert.That(bid.Pennies.Length, Is.EqualTo(2));
+            Assert.That(player.Pennies.Count, Is.EqualTo(1));
+
+            Umbrella umbrella = new Umbrella() { Id = 1 };
+
+            env = new Envelope()
+            {
+                IPEndPoint = playerEp,
+                Message = new BidAck()
+                {
+                    ConvId = new MessageNumber() { Pid = 1, Seq = 1 },
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 2 },
+                    Success = true,
+                    Umbrella = umbrella,
+                    Won = true
+                }
+            };
+
+            mockRegistry.Send(env);
+
+            Thread.Sleep(1000);
+
+            Assert.That(player.Umbrella.Id, Is.EqualTo(umbrella.Id));
+            Assert.That(player.UmbrellaRaised, Is.False);
+
+            mockRegistry.Stop();
+        }
     }
 }
