@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CommSub.Conversations.ReceiverConversations;
+
 using Messages;
+using Messages.RequestMessages;
 
 namespace BalloonStore.Conversations
 {
@@ -15,13 +17,13 @@ namespace BalloonStore.Conversations
         {
             get
             {
-                throw new NotImplementedException();
+                return new[] { typeof(ShutdownRequest) };
             }
         }
 
         protected override void HandleRequest(Message request)
         {
-            throw new NotImplementedException();
+            Process.BeginShutdown();
         }
     }
 }

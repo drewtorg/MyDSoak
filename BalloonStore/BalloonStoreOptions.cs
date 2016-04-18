@@ -18,7 +18,7 @@ namespace BalloonStore
         public int GameId { get; set; }
 
         [Option("balloons", MetaValue = "INT", Required = true, HelpText = "Number of balloons to make available")]
-        public int Balloon { get; set; }
+        public int NumBalloons { get; set; }
 
         [Option("registry", MetaValue = "STRING", Required = true, HelpText = "End Point for the registry")]
         public string RegistryEndPoint { get; set; }

@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CommSub.Conversations.ReceiverConversations;
+
+using Messages.ReplyMessages;
+using SharedObjects;
+using Messages.RequestMessages;
 using Messages;
 
 namespace BalloonStore.Conversations
@@ -15,13 +19,17 @@ namespace BalloonStore.Conversations
         {
             get
             {
-                throw new NotImplementedException();
+                return new[] { typeof(StartGame) };
             }
         }
 
         protected override void HandleRequest(Message request)
         {
-            throw new NotImplementedException();
+            StartGame start = request as StartGame;
+            if (start.Success)
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+            else
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.LeavingGame;
         }
     }
 }

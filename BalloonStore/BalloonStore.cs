@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommSub;
 using SharedObjects;
 using BalloonStore.Conversations;
+using CommSub.Conversations.InitiatorConversations;
 
 namespace BalloonStore
 {
@@ -60,7 +61,41 @@ namespace BalloonStore
 
         protected Conversation GetConversation()
         {
-            throw new NotImplementedException();
+            RequestReply conv = null;
+
+            switch (MyProcessInfo.Status)
+            {
+                case ProcessInfo.StatusCode.Initializing:
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LoginConversation>();
+                    conv.TargetEndPoint = RegistryEndPoint;
+                    break;
+                case ProcessInfo.StatusCode.Registered:
+                    MyProcessInfo.Status = ProcessInfo.StatusCode.JoiningGame;
+                    break;
+                case ProcessInfo.StatusCode.JoiningGame:
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<JoinGameConversation>();
+                    conv.ToProcessId = Options.GameManagerId;
+                    break;
+                case ProcessInfo.StatusCode.PlayingGame:
+                    conv = Play();
+                    break;
+                case ProcessInfo.StatusCode.Won:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Tied:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Lost:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.LeavingGame:
+                    EndGame();
+                    break;
+                case ProcessInfo.StatusCode.Terminating:
+                    Stop();
+                    break;
+            }
+            return conv;
         }
 
         public override void CleanupSession()
