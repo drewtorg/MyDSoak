@@ -13,6 +13,7 @@ namespace BalloonStore
 {
     public class BalloonStore : CommProcess
     {
+        public IdentityInfo Identity { get; set; }
         public ResourceSet<Balloon> Balloons { get; set; }
         public PublicKey PennyBankPublicKey { get; set; }
         new public BalloonStoreOptions Options { get; set; }
@@ -22,16 +23,28 @@ namespace BalloonStore
         public List<GameProcessData> Players { get; set; }
         public GameInfo Game { get; set; }
 
-        public override void Start()
+        public BalloonStore(BalloonStoreOptions options)
         {
+            Options = options;
             Initialize();
-            base.Start();
         }
 
         public void Initialize()
         {
-            MyProcessInfo.Status = ProcessInfo.StatusCode.Initializing;
-            RegistryEndPoint = new PublicEndPoint(Options.RegistryEndPoint);
+            MyProcessInfo = new ProcessInfo()
+            {
+                Status = ProcessInfo.StatusCode.Initializing,
+                Type = ProcessInfo.ProcessType.BalloonStore,
+                Label = Options.Label
+            };
+            RegistryEndPoint = new PublicEndPoint(Options.Registry);
+            Identity = new IdentityInfo()
+            {
+                Alias = Options.Alias,
+                ANumber = Options.ANumber,
+                FirstName = Options.FirstName,
+                LastName = Options.LastName
+            };
             SetupCommSubsystem(new BalloonStoreConversationFactory()
             {
                 DefaultMaxRetries = Options.Retries,
@@ -40,7 +53,7 @@ namespace BalloonStore
             }, minPort: Options.MinPort, maxPort: Options.MaxPort);
         }
 
-        private void CreateBalloons()
+        public void CreateBalloons()
         {
             if(PennyBankPublicKey != null)
             {
@@ -76,24 +89,24 @@ namespace BalloonStore
                     conv = CommSubsystem.ConversationFactory.CreateFromConversationType<JoinGameConversation>();
                     conv.ToProcessId = Options.GameManagerId;
                     break;
-                case ProcessInfo.StatusCode.PlayingGame:
-                    conv = Play();
-                    break;
-                case ProcessInfo.StatusCode.Won:
-                    EndGame();
-                    break;
-                case ProcessInfo.StatusCode.Tied:
-                    EndGame();
-                    break;
-                case ProcessInfo.StatusCode.Lost:
-                    EndGame();
-                    break;
-                case ProcessInfo.StatusCode.LeavingGame:
-                    EndGame();
-                    break;
-                case ProcessInfo.StatusCode.Terminating:
-                    Stop();
-                    break;
+                //case ProcessInfo.StatusCode.PlayingGame:
+                //    conv = Play();
+                //    break;
+                //case ProcessInfo.StatusCode.Won:
+                //    EndGame();
+                //    break;
+                //case ProcessInfo.StatusCode.Tied:
+                //    EndGame();
+                //    break;
+                //case ProcessInfo.StatusCode.Lost:
+                //    EndGame();
+                //    break;
+                //case ProcessInfo.StatusCode.LeavingGame:
+                //    EndGame();
+                //    break;
+                //case ProcessInfo.StatusCode.Terminating:
+                //    Stop();
+                //    break;
             }
             return conv;
         }

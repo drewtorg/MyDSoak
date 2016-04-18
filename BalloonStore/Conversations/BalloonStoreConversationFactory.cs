@@ -14,6 +14,7 @@ namespace BalloonStore.Conversations
     {
         public override void Initialize()
         {
+            Add(typeof(AliveRequest), typeof(AliveConversation));
             Add(typeof(StartGame), typeof(StartGameConversation));
             Add(typeof(GameStatusNotification), typeof(GameStatusConversation));
             Add(typeof(BuyBalloonRequest), typeof(BuyBalloonConversation));

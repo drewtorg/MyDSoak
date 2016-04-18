@@ -50,14 +50,6 @@ namespace BalloonStore.Conversations
             {
                 JoinGameReply joinReply = reply as JoinGameReply;
 
-                //((Player)Process).GameData = new GameProcessData()
-                //{
-                //    HasUmbrellaRaised = false,
-                //    HitPoints = 0,
-                //    LifePoints = joinReply.InitialLifePoints,
-                //    Type = ProcessInfo.ProcessType.Player,
-                //    ProcessId = joinReply.MsgId.Pid,
-                //};
                 ((BalloonStore)Process).Game = new GameInfo()
                 {
                     GameId = ((BalloonStore)Process).Options.GameId,

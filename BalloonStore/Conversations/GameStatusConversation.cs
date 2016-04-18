@@ -49,7 +49,7 @@ namespace BalloonStore.Conversations
         {
             return base.IsConversationStateValid() &&
                 (Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame ||
-                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame ||
+                Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoinedGame ||
                 Process.MyProcessInfo.Status == ProcessInfo.StatusCode.JoiningGame);
         }
     }

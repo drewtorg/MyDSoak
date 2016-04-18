@@ -62,6 +62,7 @@
       <DependentUpon>BalloonStoreForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BalloonStoreOptions.cs" />
+    <Compile Include="Conversations\AliveConversation.cs" />
     <Compile Include="Conversations\BalloonStoreConversationFactory.cs" />
     <Compile Include="Conversations\BuyBalloonConversation.cs" />
     <Compile Include="Conversations\GameStatusConversation.cs" />

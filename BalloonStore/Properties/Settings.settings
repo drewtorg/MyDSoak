@@ -14,5 +14,17 @@
     <Setting Name="MaxRetries" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
+    <Setting Name="ANumber" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A00003456</Value>
+    </Setting>
+    <Setting Name="FirstName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">James</Value>
+    </Setting>
+    <Setting Name="LastName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Tester</Value>
+    </Setting>
+    <Setting Name="Alias" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Drew</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

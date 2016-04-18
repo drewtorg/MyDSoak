@@ -29,7 +29,7 @@ namespace BalloonStore
             {
                 options.SetDefaults();
 
-                BalloonStore store = new BalloonStore() { Options = options };
+                BalloonStore store = new BalloonStore(options);
                 BalloonStoreForm form = new BalloonStoreForm(store);
                 store.Start();
                 Application.Run(form);

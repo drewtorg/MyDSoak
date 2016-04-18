@@ -28,7 +28,7 @@ namespace Player.Conversations
             return new LoginRequest()
             {
                 Identity = ((Player)Process).Identity,
-                ProcessLabel = Process.Label,
+                ProcessLabel = Process.MyProcessInfo.Label,
                 ProcessType = ProcessInfo.ProcessType.Player
             };
         }

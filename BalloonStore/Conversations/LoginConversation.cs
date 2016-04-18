@@ -27,7 +27,8 @@ namespace BalloonStore.Conversations
         {
             return new LoginRequest()
             {
-                ProcessLabel = Process.Label,
+                Identity = ((BalloonStore)Process).Identity,
+                ProcessLabel = Process.MyProcessInfo.Label,
                 ProcessType = ProcessInfo.ProcessType.BalloonStore
             };
         }
@@ -35,6 +36,12 @@ namespace BalloonStore.Conversations
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() && Process.MyProcessInfo.Status == ProcessInfo.StatusCode.Initializing;
+        }
+
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid() &&
+                ((BalloonStore)Process).Identity != null;
         }
 
         protected override void ProcessReply(Reply reply)
@@ -48,6 +55,8 @@ namespace BalloonStore.Conversations
                 ((BalloonStore)Process).PennyBankPublicKey = loginReply.PennyBankPublicKey;
                 Process.MyProcessInfo = loginReply.ProcessInfo;
                 MessageNumber.LocalProcessId = loginReply.ProcessInfo.ProcessId;
+
+                ((BalloonStore)Process).CreateBalloons();
             }
         }
     }

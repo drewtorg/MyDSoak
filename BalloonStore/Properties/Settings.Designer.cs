@@ -70,5 +70,53 @@ namespace BalloonStore.Properties {
                 this["MaxRetries"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A00003456")]
+        public string ANumber {
+            get {
+                return ((string)(this["ANumber"]));
+            }
+            set {
+                this["ANumber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("James")]
+        public string FirstName {
+            get {
+                return ((string)(this["FirstName"]));
+            }
+            set {
+                this["FirstName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tester")]
+        public string LastName {
+            get {
+                return ((string)(this["LastName"]));
+            }
+            set {
+                this["LastName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Drew")]
+        public string Alias {
+            get {
+                return ((string)(this["Alias"]));
+            }
+            set {
+                this["Alias"] = value;
+            }
+        }
     }
 }
