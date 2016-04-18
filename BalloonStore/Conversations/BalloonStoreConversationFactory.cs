@@ -1,9 +1,12 @@
-﻿using CommSub;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using CommSub;
+using Messages.RequestMessages;
+using Messages.ReplyMessages;
 
 namespace BalloonStore.Conversations
 {
@@ -11,7 +14,10 @@ namespace BalloonStore.Conversations
     {
         public override void Initialize()
         {
-            throw new NotImplementedException();
+            Add(typeof(StartGame), typeof(StartGameConversation));
+            Add(typeof(GameStatusNotification), typeof(GameStatusConversation));
+            Add(typeof(BuyBalloonRequest), typeof(BuyBalloonConversation));
+            Add(typeof(ShutdownRequest), typeof(ShutdownConversation));
         }
     }
 }

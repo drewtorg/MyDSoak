@@ -20,8 +20,7 @@ namespace Player
     class Program
     {
         private static ILog Logger = LogManager.GetLogger(typeof(Program));
-
-        // [STAThread]
+        
         static void Main(string[] args)
         {
             XmlConfigurator.Configure();
