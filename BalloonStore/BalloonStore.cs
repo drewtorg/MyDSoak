@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 using CommSub;
 using SharedObjects;
@@ -22,6 +23,9 @@ namespace BalloonStore
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> Players { get; set; }
         public GameInfo Game { get; set; }
+        public List<Penny> CachedPennies { get; set; }
+
+        private RSACryptoServiceProvider _rsa;
 
         public BalloonStore(BalloonStoreOptions options)
         {
@@ -56,13 +60,39 @@ namespace BalloonStore
             }, minPort: Options.MinPort, maxPort: Options.MaxPort);
 
             Balloons = new ResourceSet<Balloon>();
+            Game = new GameInfo();
+            PennyBankPublicKey = new PublicKey();
+            WaterSources = new List<GameProcessData>();
+            BalloonStores = new List<GameProcessData>();
+            UmbrellaSuppliers = new List<GameProcessData>();
+            Players = new List<GameProcessData>();
+            Balloons = new ResourceSet<Balloon>();
+
+            _rsa = new RSACryptoServiceProvider();
         }
 
         public void CreateBalloons()
         {
             if(PennyBankPublicKey != null)
             {
+                RSAPKCS1SignatureFormatter rsaSigner = new RSAPKCS1SignatureFormatter(_rsa);
+                rsaSigner.SetHashAlgorithm("SHA1");
 
+                SHA1Managed hasher = new SHA1Managed();
+                for(int i = 0; i < Options.NumBalloons; i++)
+                {
+                    byte[] bytes = Encoding.Unicode.GetBytes(i.ToString());
+                    byte[] hash = hasher.ComputeHash(bytes);
+
+                    Balloon balloon = new Balloon()
+                    {
+                        Id = i,
+                        IsFilled = false,
+                        DigitalSignature = rsaSigner.CreateSignature(hash)
+                    };
+
+                    Balloons.AddOrUpdate(balloon);
+                }
             }
         }
 
@@ -94,35 +124,18 @@ namespace BalloonStore
                     conv = CommSubsystem.ConversationFactory.CreateFromConversationType<JoinGameConversation>();
                     conv.ToProcessId = Options.GameManagerId;
                     break;
-                //case ProcessInfo.StatusCode.PlayingGame:
-                //    conv = Play();
-                //    break;
-                //case ProcessInfo.StatusCode.Won:
-                //    EndGame();
-                //    break;
-                //case ProcessInfo.StatusCode.Tied:
-                //    EndGame();
-                //    break;
-                //case ProcessInfo.StatusCode.Lost:
-                //    EndGame();
-                //    break;
-                //case ProcessInfo.StatusCode.LeavingGame:
-                //    EndGame();
-                //    break;
-                //case ProcessInfo.StatusCode.Terminating:
-                //    Stop();
-                //    break;
+                case ProcessInfo.StatusCode.PlayingGame:
+                    if(Balloons.AvailableCount == 0 && Balloons.UsedCount == Options.NumBalloons)
+                        conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LeaveGameConversation>();
+                    break;
+                case ProcessInfo.StatusCode.LeavingGame:
+                    BeginShutdown();
+                    break;
+                case ProcessInfo.StatusCode.Terminating:
+                    Stop();
+                    break;
             }
             return conv;
-        }
-
-        public override void CleanupSession()
-        {
-            Game = new GameInfo();
-            PennyBankPublicKey = new PublicKey();
-            WaterSources = new List<GameProcessData>();
-            BalloonStores = new List<GameProcessData>();
-            UmbrellaSuppliers = new List<GameProcessData>();
         }
     }
 }
