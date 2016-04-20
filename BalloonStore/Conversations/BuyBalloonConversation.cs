@@ -31,7 +31,6 @@ namespace BalloonStore.Conversations
         {
             BuyBalloonRequest req = Request as BuyBalloonRequest;
 
-
             reply = new BalloonReply();
 
             Balloon balloon = ((BalloonStore)Process).Balloons.ReserveOne();
@@ -75,7 +74,7 @@ namespace BalloonStore.Conversations
                 receiverRSA.ImportParameters(receiverRSAKeyInfo);
 
                 SHA1Managed hasher = new SHA1Managed();
-                byte[] bytes = Encoding.Unicode.GetBytes(penny.Id.ToString());
+                byte[] bytes = penny.DataBytes();
                 byte[] hash = hasher.ComputeHash(bytes);
 
                 RSAPKCS1SignatureDeformatter rsaSignComparer = new RSAPKCS1SignatureDeformatter(receiverRSA);

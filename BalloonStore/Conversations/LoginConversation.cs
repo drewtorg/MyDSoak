@@ -29,7 +29,8 @@ namespace BalloonStore.Conversations
             {
                 Identity = ((BalloonStore)Process).Identity,
                 ProcessLabel = Process.MyProcessInfo.Label,
-                ProcessType = ProcessInfo.ProcessType.BalloonStore
+                ProcessType = ProcessInfo.ProcessType.BalloonStore,
+                PublicKey = ((BalloonStore)Process).PublicKey
             };
         }
 

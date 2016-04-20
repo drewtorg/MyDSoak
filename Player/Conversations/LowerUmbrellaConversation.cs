@@ -14,7 +14,7 @@ namespace Player.Conversations
         {
             get
             {
-                return new Type[] { typeof(LowerUmbrella) };
+                return new Type[] { typeof(UmbrellaLoweredNotification) };
             }
         }
 

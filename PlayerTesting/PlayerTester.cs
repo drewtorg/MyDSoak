@@ -1411,7 +1411,7 @@ namespace PlayerTesting
 
             IPEndPoint playerEp = env.IPEndPoint;
 
-            RaiseUmbrella req = env.ActualMessage as RaiseUmbrella;
+            RaiseUmbrellaRequest req = env.ActualMessage as RaiseUmbrellaRequest;
             
             Assert.That(req.Umbrella.Id, Is.EqualTo(1));
 
@@ -1436,7 +1436,7 @@ namespace PlayerTesting
             env = new Envelope()
             {
                 IPEndPoint = playerEp,
-                Message = new LowerUmbrella()
+                Message = new UmbrellaLoweredNotification()
                 {
                     ConvId = req.ConvId,
                     MsgId = new MessageNumber() { Pid = 1, Seq = 2 },

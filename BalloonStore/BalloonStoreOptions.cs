@@ -25,6 +25,9 @@ namespace BalloonStore
         [Option("storeindex", MetaValue = "INT", Required = true, HelpText = "A number to be used in forming a label for the balloon store")]
         public int StoreIndex { get; set; }
 
+        [Option("gmep", MetaValue = "STRING", Required = true, HelpText = "The end point for the game manager")]
+        public string GameManagerEndPoint { get; set; }
+
         public override void SetDefaults()
         {
             if (string.IsNullOrWhiteSpace(ANumber))

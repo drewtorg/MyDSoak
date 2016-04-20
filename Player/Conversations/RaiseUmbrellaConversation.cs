@@ -24,7 +24,7 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            return new RaiseUmbrella()
+            return new RaiseUmbrellaRequest()
             {
                 Umbrella = ((Player)Process).Umbrella
             };

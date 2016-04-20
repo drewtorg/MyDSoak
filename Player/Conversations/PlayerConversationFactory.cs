@@ -24,7 +24,7 @@ namespace Player.Conversations
             Add(typeof(HitNotification), typeof(HitByBalloonConversation));
             Add(typeof(AuctionAnnouncement), typeof(AuctionConversation));
             Add(typeof(BidAck), typeof(BidConversation));
-            Add(typeof(LowerUmbrella), typeof(LowerUmbrellaConversation));
+            Add(typeof(UmbrellaLoweredNotification), typeof(LowerUmbrellaConversation));
             Add(typeof(ShutdownRequest), typeof(ShutdownConversation));
             Add(typeof(ExitGameRequest), typeof(ExitGameConversation));
         }

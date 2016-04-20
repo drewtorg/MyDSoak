@@ -23,9 +23,14 @@ namespace BalloonStore
         public List<GameProcessData> UmbrellaSuppliers { get; set; }
         public List<GameProcessData> Players { get; set; }
         public GameInfo Game { get; set; }
+        public PublicEndPoint GameManagerEndPoint { get; set; }
         public List<Penny> CachedPennies { get; set; }
 
-        private RSACryptoServiceProvider _rsa;
+        public RSACryptoServiceProvider rsa { get; set; }
+        public RSAPKCS1SignatureFormatter rsaSigner { get; set; }
+        public SHA1Managed Hasher { get; set; }
+        public ResourceSignerAndValidator Signer { get; set; }
+        public PublicKey PublicKey { get; set; }
 
         public BalloonStore(BalloonStoreOptions options)
         {
@@ -43,6 +48,7 @@ namespace BalloonStore
             };
 
             RegistryEndPoint = new PublicEndPoint(Options.Registry);
+            GameManagerEndPoint = new PublicEndPoint(Options.GameManagerEndPoint);
 
             Identity = new IdentityInfo()
             {
@@ -68,31 +74,35 @@ namespace BalloonStore
             Players = new List<GameProcessData>();
             Balloons = new ResourceSet<Balloon>();
 
-            _rsa = new RSACryptoServiceProvider();
+            rsa = new RSACryptoServiceProvider();
+            rsaSigner = new RSAPKCS1SignatureFormatter(rsa);
+            rsaSigner.SetHashAlgorithm("SHA1");
+            Hasher = new SHA1Managed();
+            RSAParameters parameters = rsa.ExportParameters(false);
+            PublicKey = new PublicKey()
+            {
+                Exponent = parameters.Exponent,
+                Modulus = parameters.Modulus
+            };
         }
 
         public void CreateBalloons()
         {
-            if(PennyBankPublicKey != null)
+            for(int i = 0; i < Options.NumBalloons; i++)
             {
-                RSAPKCS1SignatureFormatter rsaSigner = new RSAPKCS1SignatureFormatter(_rsa);
-                rsaSigner.SetHashAlgorithm("SHA1");
-
-                SHA1Managed hasher = new SHA1Managed();
-                for(int i = 0; i < Options.NumBalloons; i++)
+                Balloon balloon = new Balloon()
                 {
-                    byte[] bytes = Encoding.Unicode.GetBytes(i.ToString());
-                    byte[] hash = hasher.ComputeHash(bytes);
+                    Id = i,
+                    IsFilled = false,
+                    SignedBy = MyProcessInfo.ProcessId
+                };
 
-                    Balloon balloon = new Balloon()
-                    {
-                        Id = i,
-                        IsFilled = false,
-                        DigitalSignature = rsaSigner.CreateSignature(hash)
-                    };
+                byte[] bytes = balloon.DataBytes();
+                byte[] hash = Hasher.ComputeHash(bytes);
 
-                    Balloons.AddOrUpdate(balloon);
-                }
+                balloon.DigitalSignature = rsaSigner.CreateSignature(hash);
+
+                Balloons.AddOrUpdate(balloon);
             }
         }
 
