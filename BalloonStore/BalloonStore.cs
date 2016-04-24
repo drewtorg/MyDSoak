@@ -73,6 +73,7 @@ namespace BalloonStore
             UmbrellaSuppliers = new List<GameProcessData>();
             Players = new List<GameProcessData>();
             Balloons = new ResourceSet<Balloon>();
+            CachedPennies = new List<Penny>();
 
             rsa = new RSACryptoServiceProvider();
             rsaSigner = new RSAPKCS1SignatureFormatter(rsa);

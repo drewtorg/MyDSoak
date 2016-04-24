@@ -32,7 +32,7 @@ namespace BalloonStore.Conversations
             ((BalloonStore)Process).BalloonStores = allProcesses.Where(x => x.Type == ProcessInfo.ProcessType.BalloonStore).ToList();
             ((BalloonStore)Process).UmbrellaSuppliers = allProcesses.Where(x => x.Type == ProcessInfo.ProcessType.UmbrellaSupplier).ToList();
             ((BalloonStore)Process).Players = allProcesses.Where(x => x.Type == ProcessInfo.ProcessType.Player).ToList();
-
+            
             switch (status.Game.Status)
             {
                 case GameInfo.StatusCode.Ending:
@@ -40,6 +40,9 @@ namespace BalloonStore.Conversations
                     break;
                 case GameInfo.StatusCode.Complete:
                     ((BalloonStore)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.LeavingGame;
+                    break;
+                case GameInfo.StatusCode.InProgress:
+                    ((BalloonStore)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
                     break;
             }
 

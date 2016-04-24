@@ -14,14 +14,14 @@ namespace BalloonStore.Conversations
 {
     public class ValidatePennyConversation : RequestReply
     {
-        BuyBalloonConversation parent = null;
-        Penny penny = null;
+        public BuyBalloonConversation Parent = null;
+        public Penny[] Pennies= null;
 
         protected override Type[] AllowedReplyTypes
         {
             get
             {
-                return new Type[] { typeof(PennyValidation) };
+                return new Type[] { typeof(Reply) };
             }
         }
 
@@ -30,20 +30,26 @@ namespace BalloonStore.Conversations
             return new PennyValidation()
             {
                 MarkAsUsedIfValid = true,
-                Pennies = new Penny[] { penny }
+                Pennies = Pennies
             };
         }
 
         protected override void ProcessReply(Reply reply)
         {
-            if (reply.Success)
-                parent.ValidatedByPennyBank = true;
+            Parent.ValidatedByPennyBank = reply.Success;
         }
 
         protected override bool IsProcessStateValid()
         {
             return base.IsProcessStateValid() 
                 && Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
+        }
+
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid() 
+                && Parent != null 
+                && Pennies != null;
         }
     }
 }

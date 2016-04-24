@@ -59,7 +59,7 @@ namespace BalloonStore.Conversations
 
             if (((BalloonStore)Process).CachedPennies.Contains(penny))
             {
-                reply.Note = "Invalid Penny";
+                reply.Note = "Invalid Penny, I've seen this one before";
                 result = false;
             }
             else
@@ -84,7 +84,7 @@ namespace BalloonStore.Conversations
 
                 if (!verified)
                 {
-                    reply.Note = "Invalid Penny";
+                    reply.Note = "Invalid Penny, the signature doesn't check out";
                     result = false;
                 }
                 else
@@ -93,12 +93,14 @@ namespace BalloonStore.Conversations
 
                     ValidatePennyConversation conv = ((BalloonStore)Process).CommSubsystem.ConversationFactory.CreateFromConversationType<ValidatePennyConversation>();
                     conv.TargetEndPoint = ((BalloonStore)Process).PennyBankEndPoint;
+                    conv.Parent = this;
+                    conv.Pennies = new Penny[] { penny };
 
                     conv.Execute();
 
                     if (!ValidatedByPennyBank)
                     {
-                        reply.Note = "Invalid Penny";
+                        reply.Note = "Invalid Penny, PennyBank said no";
                         result = false;
                     }
                 }

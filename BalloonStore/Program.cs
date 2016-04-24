@@ -34,6 +34,11 @@ namespace BalloonStore
                 store.Start();
                 Application.Run(form);
             }
+            else
+            {
+                Logger.Info("Provided args: " + string.Join(" ", args));
+                Logger.Info(options.GetUsage());
+            }
         }
     }
 }
