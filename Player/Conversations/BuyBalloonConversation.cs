@@ -22,7 +22,9 @@ namespace Player.Conversations
 
         protected override Message CreateRequest()
         {
-            ((Player)Process).Pennies.TryPop(out penny);
+            while(penny == null)
+                ((Player)Process).Pennies.TryPop(out penny);
+
             return new BuyBalloonRequest()
             {
                 Penny = penny

@@ -25,7 +25,6 @@ namespace Player.Conversations
 
         protected override Message CreateReply()
         {
-            Process.MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
             return new Reply()
             {
                 Note = "Let's do this!",

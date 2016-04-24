@@ -46,6 +46,9 @@ namespace Player.Conversations
                     else
                         ((Player)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.Lost;
                     break;
+                case GameInfo.StatusCode.InProgress:
+                    ((Player)Process).MyProcessInfo.Status = ProcessInfo.StatusCode.PlayingGame;
+                    break;
             }
 
         }

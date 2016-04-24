@@ -34,6 +34,8 @@ namespace Player.Conversations
         {
             if (reply.Success)
                 ((Player)Process).UmbrellaRaised = true;
+            else
+                ((Player)Process).Umbrella = null;
         }
 
         protected override bool IsProcessStateValid()

@@ -82,12 +82,12 @@ namespace Player
             ProcessListView.Items.Add(new ListViewItem(new string[]
             {
                         "Umbrellas",
-                        "0"
+                        Player.Umbrella == null ? "0" : "1"
             }));
             ProcessListView.Items.Add(new ListViewItem(new string[]
             {
                         "Has Umbrella Raised",
-                        "False"
+                        Player.UmbrellaRaised.ToString()
             }));
         }
 
