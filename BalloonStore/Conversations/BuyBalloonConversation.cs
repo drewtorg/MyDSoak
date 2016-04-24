@@ -51,6 +51,19 @@ namespace BalloonStore.Conversations
             return reply;
         }
 
+        protected override bool IsConversationStateValid()
+        {
+            return base.IsConversationStateValid()
+                && Request is BuyBalloonRequest
+                && ((BuyBalloonRequest)Request).Penny != null;
+        }
+
+        protected override bool IsProcessStateValid()
+        {
+            return base.IsProcessStateValid()
+                && Process.MyProcessInfo.Status == ProcessInfo.StatusCode.PlayingGame;
+        }
+
         private bool IsValidPenny(Penny penny)
         {
             bool result = true;
