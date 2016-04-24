@@ -38,7 +38,7 @@ namespace BalloonStore.Conversations
             if (balloon == null)
                 reply.Note = "No balloons left in inventory";
 
-            if (PlayerInGame(req.ConvId.Pid) && balloon != null && IsValidPenny(req.Penny))
+            if (req.Penny != null && PlayerInGame(req.ConvId.Pid) && balloon != null && IsValidPenny(req.Penny))
             {
                 reply.Balloon = balloon;
                 reply.Note = "Nice doing business";
@@ -49,13 +49,6 @@ namespace BalloonStore.Conversations
                 reply.Success = false;
 
             return reply;
-        }
-
-        protected override bool IsConversationStateValid()
-        {
-            return base.IsConversationStateValid()
-                && Request is BuyBalloonRequest
-                && ((BuyBalloonRequest)Request).Penny != null;
         }
 
         protected override bool IsProcessStateValid()
