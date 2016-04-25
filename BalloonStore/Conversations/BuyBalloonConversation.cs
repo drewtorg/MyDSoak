@@ -46,7 +46,11 @@ namespace BalloonStore.Conversations
                 ((BalloonStore)Process).CachedPennies.Add(req.Penny);
             }
             else
+            {
                 reply.Success = false;
+                if(balloon != null)
+                    ((BalloonStore)Process).Balloons.Unreserve(balloon.Id);
+            }
 
             return reply;
         }
@@ -63,7 +67,7 @@ namespace BalloonStore.Conversations
 
             //start by testing the cache
 
-            if (((BalloonStore)Process).CachedPennies.Contains(penny))
+            if (((BalloonStore)Process).CachedPennies.Any(p => penny.Id == p.Id))
             {
                 reply.Note = "Invalid Penny, I've seen this one before";
                 result = false;

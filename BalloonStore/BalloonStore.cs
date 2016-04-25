@@ -29,7 +29,6 @@ namespace BalloonStore
         public RSACryptoServiceProvider rsa { get; set; }
         public RSAPKCS1SignatureFormatter rsaSigner { get; set; }
         public SHA1Managed Hasher { get; set; }
-        public ResourceSignerAndValidator Signer { get; set; }
         public PublicKey PublicKey { get; set; }
 
         public BalloonStore(BalloonStoreOptions options)
@@ -65,7 +64,6 @@ namespace BalloonStore
                 Process = this
             }, minPort: Options.MinPort, maxPort: Options.MaxPort);
 
-            Balloons = new ResourceSet<Balloon>();
             Game = new GameInfo();
             PennyBankPublicKey = new PublicKey();
             WaterSources = new List<GameProcessData>();
@@ -136,13 +134,18 @@ namespace BalloonStore
                     conv.ToProcessId = Options.GameManagerId;
                     break;
                 case ProcessInfo.StatusCode.PlayingGame:
-                    if(Balloons.AvailableCount == 0 && Balloons.UsedCount == Options.NumBalloons)
+                    if (Balloons.AvailableCount == 0 && Balloons.UsedCount == Options.NumBalloons)
+                    {
                         conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LeaveGameConversation>();
+                        conv.ToProcessId = Game.GameManagerId;
+                    }
                     break;
                 case ProcessInfo.StatusCode.LeavingGame:
-                    BeginShutdown();
+                    conv = CommSubsystem.ConversationFactory.CreateFromConversationType<LogoutConversation>();
+                    conv.TargetEndPoint = RegistryEndPoint;
                     break;
                 case ProcessInfo.StatusCode.Terminating:
+                    BeginShutdown();
                     Stop();
                     break;
             }

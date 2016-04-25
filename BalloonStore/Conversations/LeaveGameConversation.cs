@@ -37,7 +37,7 @@ namespace BalloonStore.Conversations
             if (reply.Success)
             {
                 Process.CleanupSession();
-                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.Registered;
+                Process.MyProcessInfo.Status = ProcessInfo.StatusCode.Terminating;
             }
         }
     }
