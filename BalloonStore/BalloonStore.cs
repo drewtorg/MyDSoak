@@ -30,6 +30,8 @@ namespace BalloonStore
         public RSAPKCS1SignatureFormatter rsaSigner { get; set; }
         public SHA1Managed Hasher { get; set; }
         public PublicKey PublicKey { get; set; }
+        public int NextId { get; set; }
+        public int NumIds { get; set; }
 
         public BalloonStore(BalloonStoreOptions options)
         {
@@ -83,7 +85,10 @@ namespace BalloonStore
                 Exponent = parameters.Exponent,
                 Modulus = parameters.Modulus
             };
-        }
+
+            NextId = 0;
+            NumIds = 0;
+    }
 
         public void CreateBalloons()
         {
@@ -91,7 +96,7 @@ namespace BalloonStore
             {
                 Balloon balloon = new Balloon()
                 {
-                    Id = i,
+                    Id = NextId + i,
                     IsFilled = false,
                     SignedBy = MyProcessInfo.ProcessId
                 };

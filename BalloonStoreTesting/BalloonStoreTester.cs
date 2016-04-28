@@ -132,7 +132,7 @@ namespace BalloonStoreTesting
             balloonStore.MyProcessInfo.Status = ProcessInfo.StatusCode.Initializing;
             RequestReply conv = balloonStore.GetConversation();
             conv.Launch();
-
+            
             Envelope env = mockRegistry.Receive(1000);
 
             IPEndPoint balloonStoreEP = env.IPEndPoint;
@@ -158,6 +158,8 @@ namespace BalloonStoreTesting
             conv = balloonStore.GetConversation();
             conv.Launch();
 
+            env = mockRegistry.Receive(1000);
+
             //send a false success
             res = new Envelope()
             {
@@ -182,6 +184,8 @@ namespace BalloonStoreTesting
             conv = balloonStore.GetConversation();
             conv.Launch();
 
+            env = mockRegistry.Receive(100);
+
             //send a good response
             res = new Envelope()
             {
@@ -198,11 +202,38 @@ namespace BalloonStoreTesting
 
             mockRegistry.Send(res);
 
+            Thread.Sleep(100);
+
+            // now execute the next id conversation
+            env = mockRegistry.Receive(2000);
+
+            Assert.That(env, Is.Not.Null);
+
+            NextIdRequest idReq = env.ActualMessage as NextIdRequest;
+
+            Assert.That(idReq.NumberOfIds, Is.EqualTo(BALLOONS));
+
+            env = new Envelope()
+            {
+                IPEndPoint = balloonStoreEP,
+                Message = new NextIdReply()
+                {
+                    Success = true,
+                    NextId = 5,
+                    ConvId = idReq.ConvId,
+                    MsgId = new MessageNumber() { Pid = 1, Seq = 4 }
+                }
+            };
+
+            mockRegistry.Send(env);
+
             Thread.Sleep(2000);
 
             Assert.That(balloonStore.ProxyEndPoint, Is.EqualTo(mockEp));
             Assert.That(balloonStore.MyProcessInfo.ProcessId, Is.EqualTo(2));
             Assert.That(balloonStore.MyProcessInfo.Status, Is.EqualTo(ProcessInfo.StatusCode.Registered));
+            Assert.That(balloonStore.Balloons.AvailableCount, Is.EqualTo(BALLOONS));
+            Assert.That(balloonStore.Balloons.Get(5), Is.Not.Null);
 
             mockRegistry.Stop();
         }

@@ -57,6 +57,12 @@ namespace BalloonStore.Conversations
                 Process.MyProcessInfo = loginReply.ProcessInfo;
                 MessageNumber.LocalProcessId = loginReply.ProcessInfo.ProcessId;
 
+
+                RequestReply conv = CommSubsystem.ConversationFactory.CreateFromConversationType<NextIdConversation>();
+                conv.TargetEndPoint = Process.RegistryEndPoint;
+
+                conv.Execute();
+
                 ((BalloonStore)Process).CreateBalloons();
             }
         }

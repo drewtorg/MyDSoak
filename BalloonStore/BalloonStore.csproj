@@ -70,6 +70,7 @@
     <Compile Include="Conversations\LeaveGameConversation.cs" />
     <Compile Include="Conversations\LoginConversation.cs" />
     <Compile Include="Conversations\LogoutConversation.cs" />
+    <Compile Include="Conversations\NextIdConversation.cs" />
     <Compile Include="Conversations\ShutdownConversation.cs" />
     <Compile Include="Conversations\StartGameConversation.cs" />
     <Compile Include="Conversations\ValidatePennyConversation.cs" />
