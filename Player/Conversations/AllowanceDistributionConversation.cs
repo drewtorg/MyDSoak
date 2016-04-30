@@ -29,7 +29,7 @@ namespace Player.Conversations
         protected override Message CreateReply()
         {
             AllowanceDeliveryRequest req = Request as AllowanceDeliveryRequest;
-            TcpClient client = new TcpClient("127.0.0.1", req.PortNumber);
+            TcpClient client = new TcpClient(((Player)Process).PennyBankEndPoint.Host, req.PortNumber);
             NetworkStream stream = client.GetStream();
             stream.ReadTimeout = 100;
 
